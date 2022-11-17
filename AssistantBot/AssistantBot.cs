@@ -1,212 +1,93 @@
-﻿using System.Text.RegularExpressions;
+﻿using AssistantBotAPI.Models;
+using OptionСlasses.Weather;
+using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
+using Microsoft.Data.Sqlite;
+using File = System.IO.File;
+using OpenMeteo;
 
 namespace AssistantBotAPI
 {
     public class AssistantBot
     {
-        static async Task Main(String [] args)
+        
+
+        static async Task Main(String[] args)
         {
-            
+            //Bot bot = new Bot();
+            //await bot.startBot();
+            // RunAsync().GetAwaiter().GetResult();
+            Weather weather = new Weather("Саратов");
+            //var s = await weather.getStringCurrentWeather();
+            //Console.WriteLine(s);
+          //  Console.WriteLine(0.9090909090000000001 == 0.9090909090000000001);
+            //Weather weather = new Weather("Саратов", true);
+            //await weather.mymethod();
+            //List<string> list = null;
+            //if (File.Exists(@"C:\Users\user\OneDrive\Рабочий стол\jokes1.txt"))
+            //{
+            //    list = new List<string>(File.ReadAllLines(@"C:\Users\user\OneDrive\Рабочий стол\jokes1.txt"));
+            //}
+            //string command = "SELECT count(2) from Joke";
+            ////for (int i = 0; i < list.Count; i++)
+            ////{
+            ////    command += $"('Разные','{list[i]}')";
+            ////    if (i < list.Count - 1) command += ",";
+            ////}
+            //using (var connection = new SqliteConnection(@"Data Source=C:\Users\user\source\repos\AssistantBot\AssistantBot\AssistentData\AssistentBotDataBase.db"))
+            //{
+            //    connection.Open();
+            //    SqliteCommand sqliteCommand = new SqliteCommand(command, connection);
 
-            var botClient = new TelegramBotClient("5478947972:AAHRlNd3QlcV5iJFpvGvaezn-i3EMUXfBuY");
-            using var cts = new CancellationTokenSource();
-            
-            // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
-            var receiverOptions = new ReceiverOptions
-            {
-                AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
-            };
-            botClient.StartReceiving(
-                updateHandler: HandleUpdateAsync,
-                pollingErrorHandler: HandlePollingErrorAsync,
-                receiverOptions: receiverOptions,
-                cancellationToken: cts.Token
-            );
+            //    using (SqliteDataReader reader = sqliteCommand.ExecuteReader())
+            //    {
+            //        if (reader.HasRows) // если есть данные
+            //        {
 
-            var me = await botClient.GetMeAsync();
+            //            var i=(long)reader.GetValue(0);
 
-            Console.WriteLine($"Start listening for @{me.Username}");
-            Console.ReadLine();
-            
-            // Send cancellation request to stop bot
-            cts.Cancel();
+
+            //        }
+            //    }
+            //}
+
         }
-        private static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        static async Task RunAsync()
         {
-            // Only process Message updates: https://core.telegram.org/bots/api#message
-            bool flag=false;
-            //bool dl = false;
-            //bool fl = false;
-            if (update.Message is not { } message)
-                return;
-            // Only process text messages
-            if (message.Text is not { } messageText)
-                return;
+            //    OpenMeteo.OpenMeteoClient client = new OpenMeteo.OpenMeteoClient();
 
-            var chatId = message.Chat.Id;
-            Message sentMessage;
-            //Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
-            if (string.Compare(messageText, "Привет") == 0
-                || string.Compare(messageText, "Здравствуй") == 0
-                || messageText=="здравствуй"
-                || messageText == "привет")
-            {
+            //    //// Create new geocodingOptions object for Tokyo
+            //    GeocodingOptions geocodingData = new GeocodingOptions("Саратов", "ru", 1);
 
-                sentMessage=await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: StandardMessageBot.messageHello,
-                cancellationToken: cancellationToken);
-                sentMessage = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: StandardMessageBot.messageHowYou,
-                cancellationToken: cancellationToken);
-                flag=true;
-             
-            }
-            else
-            {
-                if (messageText == "Отлично" || messageText == "Хорошо"
-                    || messageText == "хорошо" || messageText == "отлично")
-                {
-                    if (flag)
-                    {
-                        sentMessage = await botClient.SendStickerAsync(
-                        chatId: chatId,
-                        sticker: StandardMessageBot.stickerNice,
-                        cancellationToken: cancellationToken);
-                        flag = false;
-                    }
-                }
-                else if (string.Compare(messageText, "Плохо") == 0
-                    || string.Compare(messageText, "Ужасно") == 0
-                    || string.Compare(messageText, "Неочень") == 0
-                    || string.Compare(messageText, "плохо") == 0)
-                {
-                    if (flag)
-                    {
-                        sentMessage = await botClient.SendStickerAsync(
-                        chatId: chatId,
-                        sticker: StandardMessageBot.stickerNotNice,
-                        cancellationToken: cancellationToken);
-                        flag = false;
-                    }
-                }
-                else if (messageText == "Показать расписание")
-                {
-                   
-                    
-                    //Спрашиваем у человека какая у него группа
-                    //sentMessage = await botClient.SendTextMessageAsync(
-                    //        chatId: chatId,
-                    //        text: StandardMessageBot.messQuestsGroup,
-                    //        cancellationToken: cancellationToken);
-                    //Проверяем сообщение с группой на валидность
-                    //if (Regex.IsMatch(messageText, StandardMessageBot.pattrenGroup, RegexOptions.IgnoreCase))
-                    //{
+            //    var apiResponse = await client.GetLocationDataAsync(geocodingData);
+            //    //var cityData = apiResponse.Locations[0];
 
+            //    //Console.WriteLine(cityData.Name + " is a city in " + cityData.Country + " with a population of " + cityData.Population + " people.");
+            //    //Console.WriteLine(cityData.Name + " coordinates are: " + cityData.Latitude + "/" + cityData.Longitude);
+            //    //OpenMeteo.OpenMeteoClient client = new OpenMeteo.OpenMeteoClient();
 
-                       
-                        //fl = true;
-                        // dl= true; 
-                        KeyboardButton button = new KeyboardButton("");
-                        sentMessage = await botClient.SendTextMessageAsync(
-                            chatId: chatId,
-                            text: StandardMessageBot.messQuestSched,
-                            replyMarkup: GetShedulButtons(button),
-                            cancellationToken: cancellationToken);
-                    //}
-                    //if (dl) { 
-                        var amm = new Schedule("https://rasp.sstu.ru", "б1-ИФСТ-21",messageText);
-                        amm.LoadData();
-                    //}
-                    
-                }
-                else 
-                {
-                    KeyboardButton button = new KeyboardButton("");
+            //    // Make a new api call to get the current weather in tokyo
+            //    WeatherForecast weatherData = await client.QueryAsync(geocodingData);
 
-                    sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: StandardMessageBot.messageHelp,
-                    cancellationToken: cancellationToken,
-                    replyMarkup: GetFunButtons(button)
+            //    // Output the current weather to console
+            //    Console.WriteLine("Weather : " + weatherData.CurrentWeather.Temperature + "°C "+weatherData.CurrentWeather.Windspeed+" "+weatherData.Hourly.Precipitation[0]);
+            OpenMeteo.OpenMeteoClient client = new OpenMeteo.OpenMeteoClient();
 
-                    );
-                }
-                
-            }
-            // Echo received message text
-            
-        }
+            // Set custom options
+            WeatherForecastOptions options = new WeatherForecastOptions();
+            options.Hourly = HourlyOptions.All;
+            options.Latitude = 35.6895f;
+            options.Longitude = 139.69171f; // For Tokyo
 
-        private static IReplyMarkup GetFunButtons(KeyboardButton button)
-        {
-            var rtx=new ReplyKeyboardMarkup(button);
-            rtx.Keyboard = new List<List<KeyboardButton>>
-            {
-                new List<KeyboardButton>()
-                {
-                    new KeyboardButton("Играть"),
-                    new KeyboardButton("Показать расписание")
-                }
+            // Make a new api call to get the current weather in tokyo
+            WeatherForecast weatherData = await client.QueryAsync(options);
 
-            };
-            return rtx;
-        }
-        private static IReplyMarkup GetShedulButtons(KeyboardButton button)
-        {
-            var rtx = new ReplyKeyboardMarkup(button);
-            rtx.Keyboard = new List<List<KeyboardButton>>
-            {
-                new List<KeyboardButton>()
-                {
-                    new KeyboardButton("Понедельник"),
-                    new KeyboardButton("Вторник"),
-                    new KeyboardButton("Среда"),
-                },
-                new List<KeyboardButton>()
-                {
-                    new KeyboardButton("Четверг"),
-                    new KeyboardButton("Пятница"),
-                    new KeyboardButton("Суббота"),
-                },
-                new List<KeyboardButton>()
-                {
-                    new KeyboardButton("Воскресение"),
-                    new KeyboardButton("Вся неделя"),
-                    
-                }
-
-            };
-            return rtx;
-        }
-
-        private static Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-        {
-            var ErrorMessage = exception switch
-            {
-                ApiRequestException apiRequestException
-                    => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-                _ => exception.ToString()
-            };
-
-            Console.WriteLine(ErrorMessage);
-            return Task.CompletedTask;
-        }
-        private static async Task<bool> IsMath(string exs,string pat)
-        {
-            if(Regex.IsMatch(exs, pat, RegexOptions.IgnoreCase))
-            {
-                return true;
-            }
-            return false;
+            // Output the current weather to console
+            Console.WriteLine("Weather in Tokyo: " + weatherData.Hourly.Vapor_pressure_deficit[0] + "");
         }
     }
-
 }

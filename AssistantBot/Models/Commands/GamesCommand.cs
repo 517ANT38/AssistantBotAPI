@@ -1,0 +1,27 @@
+﻿using JobWithData;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+
+namespace AssistantBotAPI.Models.Commands;
+internal class GamesCommand : Command
+{
+    public override string Name => "thrtu";
+
+    public override List<string> RegStringChekData => throw new NotImplementedException();
+
+    public override bool Contains(string message)
+    {
+        return message.Contains(this.Name);
+    }
+
+    
+    public override Task<Message> Execute(long chatId, TelegramBotClient client, params string[] arr)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override string[] GetParamsArrStr(string message)
+    {
+        throw new NotImplementedException();
+    }
+}
