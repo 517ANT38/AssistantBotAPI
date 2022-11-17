@@ -13,6 +13,19 @@ public class ScheduleSSTU: IAsyncLoaDatable
     private string url;
     private string group;
     private bool flag;
+    public static List<string> RegStringChekData
+    {
+        get
+        {
+            List<string> ts = new List<string>()
+            {
+          //      @"^(?:(http(s|)|ftp)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+$",
+                @"^(б|м|с)[1-5]{0,1}-([^\w\sа-яЙйЫЪЬ]{3,4}(оз|з|ипу|озипу|))-[1-5]{2}(| )",
+               @"[Нн]а сегодня"
+            };
+            return ts;
+        }
+    }
     public ScheduleSSTU(string url, string group, bool flag=true)
     {
         this.url = url;

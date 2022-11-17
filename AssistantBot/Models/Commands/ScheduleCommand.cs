@@ -89,11 +89,11 @@ internal class ScheduleCommand : Command
 
     public override string[] GetParamsArrStr(string message)
     {
-        string[] tex =message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        string[] tex =message.Split(',', StringSplitOptions.RemoveEmptyEntries);
         string[] res =new string[tex.Length-1];
-        for(int i = 1,j=0; i < tex.Length; i++,j++)
+        for(int i = 0; i < tex.Length; i++)
         {
-            res[j]=tex[i];
+            res[i]=tex[i];
         }
         
         return res;
