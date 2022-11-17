@@ -18,13 +18,13 @@ namespace AssistantBotAPI
 
         static async Task Main(String[] args)
         {
-            //Bot bot = new Bot();
-            //await bot.startBot();
+            Bot bot = new Bot();
+            await bot.startBot();
             // RunAsync().GetAwaiter().GetResult();
-            Weather weather = new Weather("Саратов");
+            //Weather weather = new Weather("Саратов");
             //var s = await weather.getStringCurrentWeather();
             //Console.WriteLine(s);
-          //  Console.WriteLine(0.9090909090000000001 == 0.9090909090000000001);
+            //  Console.WriteLine(0.9090909090000000001 == 0.9090909090000000001);
             //Weather weather = new Weather("Саратов", true);
             //await weather.mymethod();
             //List<string> list = null;
