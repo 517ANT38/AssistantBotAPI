@@ -9,12 +9,33 @@ namespace OptionСlasses.Shedule;
 
 public class ScheduleCGU:IAsyncLoaDatable
 {
-    string fakult;
-    string group;
-    ScheduleCGU(string fakult,string group)
+    private string fakult;
+    private string group;
+    private string form;
+    private string url;
+    private bool fl;
+    public static List<string> RegStringChekData
+    {
+        get
+        {
+            List<string> ts = new List<string>()
+            {
+          //      @"^(?:(http(s|)|ftp)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+$",
+                @"^(Институт|институт|факультет|Факультет|колледж|Колледж|)[А-Я ]{1,}(факультет|)",
+                @"(Дневная|Заочная|Вечерняя|дневная|заочная|вечерняя)( форма|)( обучения|)",
+                @"[0-9]{1,7}",
+                @"[Нн]а сегодня"
+            };
+            return ts;
+        }
+    }
+    public ScheduleCGU(string url,string fakult,string group,string form,bool fl=true)
     {
         this.fakult = fakult;
         this.group = group;
+        this.form = form;
+        this.url = url;
+        this.fl = fl;
     }
 
     public async Task<WrapperAboveData<string>> LoadData()

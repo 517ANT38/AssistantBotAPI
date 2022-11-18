@@ -97,28 +97,9 @@ public class ScheduleSSTU: IAsyncLoaDatable
 
     public async Task<WrapperAboveData<string>> LoadData()
     {
-        string str;
-        try
-        {
-            str = await creatUrlSchedule(group, url);
-        }
-        catch (GroupNotFoundException e)
-        {
-            return new WrapperAboveData<string>(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return new WrapperAboveData<string>("Неправильный адрес сайта");
-        }
-        catch (HttpRequestException e)
-        {
-            return new WrapperAboveData<string>("Проверьте подключение к сети. Запустите команду еще раз,назвав группу и адрес сайта");
-        }    
-        catch (TaskCanceledException e)
-        {
-            return new WrapperAboveData<string>("Время ожидания истекло. Запустите команду еще раз,назвав группу и адрес сайта");
-
-        }
+        string str = await creatUrlSchedule(group, url);
+        
+        
         var html = new HtmlDocument();
         html.LoadHtml(str);
         var document = html.DocumentNode;
