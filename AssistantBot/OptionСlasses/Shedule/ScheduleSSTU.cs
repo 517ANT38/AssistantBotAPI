@@ -55,29 +55,13 @@ public class ScheduleSSTU: IAsyncLoaDatable
     }
     private static async Task<string> creatUrlSchedule(string group, string url)
     {
-        string str;
-        //try
-        //{
-            str = await GetMainSchedule(url);
-        //}
-        //catch (InvalidOperationException e)
-        //{
-        //    return new WrapperAboveData<string>("Неправильный адрес сайта");
-        //}
-        //catch (HttpRequestException e)
-        //{
-        //    return new WrapperAboveData<string>("Проверьте подключение к сети. Запустите команду еще раз,назавав группу и адрес сайта");
-        //}
-        //catch (TaskCanceledException e)
-        //{
-        //    return new WrapperAboveData<string>("Время ожидания истекло. Запустите команду еще раз,назавав группу и адрес сайта");
-
-        //}
+        
+        string str = await GetMainSchedule(url);
+        
         var doc = new HtmlDocument();
         doc.LoadHtml(str);
         var document = doc.DocumentNode;
         var a = document.QuerySelectorAll(".col-auto.group");
-        //var a = doc.DocumentNode.SelectNodes("//div[@class='col-auto group']");
         string? atr =null;
         foreach (var item in a)
         {

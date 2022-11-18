@@ -7,7 +7,6 @@ public class StartCommand : Command
 {
     public override string Name => @"/start";
 
-    public override List<string> RegStringChekData => throw new NotImplementedException();
 
     public override bool Contains(string message)
     {

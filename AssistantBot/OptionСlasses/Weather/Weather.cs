@@ -10,7 +10,7 @@ using OpenMeteo;
 
 namespace OptionСlasses.Weather;
 
-public class Weather
+public class Weather: IAsyncGetStringWeatherable
 {
     private OpenMeteo.OpenMeteoClient client = new OpenMeteo.OpenMeteoClient();
     private GeocodingOptions geocodingData;

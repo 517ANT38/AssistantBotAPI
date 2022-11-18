@@ -7,7 +7,6 @@ internal class GamesCommand : Command
 {
     public override string Name => "thrtu";
 
-    public override List<string> RegStringChekData => throw new NotImplementedException();
 
     public override bool Contains(string message)
     {

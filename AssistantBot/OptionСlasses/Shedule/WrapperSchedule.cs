@@ -110,7 +110,7 @@ public class WrapperSchedule : IAsyncLoaDatable
     {
         string? url = null;
         string command = $"SELECT url_u from University_url WHERE University_name='{p}'";
-        using (var connection = new SqliteConnection(@"Data Source=AssistantBot\AssistantBot\AssistentData\AssistentBotDataBase.db"))
+        using (var connection = new SqliteConnection(@"Data Source=C:\Users\user\source\repos\AssistantBot\AssistantBot\AssistentData\AssistentBotDataBase.db"))
         {
             connection.Open();
             SqliteCommand sqliteCommand = new SqliteCommand(command, connection);

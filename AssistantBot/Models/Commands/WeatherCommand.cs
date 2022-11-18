@@ -1,4 +1,5 @@
 ﻿using JobWithData;
+using OptionСlasses.Weather;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -8,18 +9,38 @@ internal class WeatherCommand : Command
 {
     public override string Name => "/weather";
 
-    public override List<string> RegStringChekData => throw new NotImplementedException();
 
     public override bool Contains(string message)
     {
         return message.Contains(this.Name);
     }
 
-    public override Task<Message> Execute(long chatId, TelegramBotClient client, params string[] arr)
+    public override async Task<Message> Execute(long chatId, TelegramBotClient client, params string[] arr)
     {
-        throw new NotImplementedException();
+        IAsyncGetStringWeatherable weatherable=null;
+        string res="Вы не задали параметры: город, и какой вам нужен прогноз(по часовой на текущую дату, текущий, на неделю).";
+        if (arr.Length > 0)
+        {
+            weatherable=new WrapperWeather(arr[0]);
+            if (arr.Length > 1)
+                res = await weatherable.getStringWeather(arr[1]);
+            else
+                res =await weatherable.getStringWeather();
+        }
+        return await client.SendTextMessageAsync(chatId, res, parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
+
+    }
+    public override string[] GetParamsArrStr(string message)
+    {
+        string[] tex = message.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        string[] res = new string[tex.Length - 1];
+        for (int i = 0; i < tex.Length; i++)
+        {
+            res[i] = tex[i];
+        }
+
+        return res;
     }
 
-   
-    
+
 }

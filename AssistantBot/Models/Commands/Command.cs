@@ -13,7 +13,6 @@ namespace AssistantBotAPI.Models.Commands
     public abstract class Command
     {
         public abstract string Name { get; }
-        public abstract List<string> RegStringChekData { get; }
         public abstract Task<Message> Execute(long chatId, TelegramBotClient client,params string[] arr);
 
         public abstract bool Contains(string message);
