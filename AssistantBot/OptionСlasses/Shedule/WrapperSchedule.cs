@@ -27,30 +27,37 @@ public class WrapperSchedule : IAsyncLoaDatable
         bool fl = true;
         try
         {
-            string[] tmp = paramsStr[0].Split(' ');
-
-            if (Regex.IsMatch(tmp[1], RegexWUS, RegexOptions.IgnoreCase))
+            //string[] tmp = paramsStr[0].Split(' ');
+            Console.WriteLine(paramsStr[0]);
+            if (Regex.IsMatch(paramsStr[0], RegexWUS, RegexOptions.IgnoreCase))
             {
                 //Ищем вуз в базе данных
-                url = getUrlUniversitySQLite(tmp[1]);
+                url = getUrlUniversitySQLite(paramsStr[0]);
                 if (url == null)
                     return new WrapperAboveData<string>("Такого вуза нет");
-                if(tmp.Length <2)
-                    return new WrapperAboveData<string>("Вуз не задан");
-                if (tmp[1] == "СГТУ")
+                //if(tmp.Length <2)
+                //    return new WrapperAboveData<string>("Вуз не задан");
+                if (paramsStr[0] == "СГТУ")
                 {
+                    
                     if (Regex.IsMatch(paramsStr[1], ScheduleSSTU.RegStringChekData[0], RegexOptions.ECMAScript))
                     {
-                        //if (paramsStr.Count > 1)
-                        fl = !Regex.IsMatch(paramsStr[2], ScheduleSSTU.RegStringChekData[1], RegexOptions.IgnoreCase);
+                        if (paramsStr.Count > 2)
+                        {
+                            string a=String.Join(" ", paramsStr[2], paramsStr[3]);
+                            fl = !Regex.IsMatch(a, ScheduleSSTU.RegStringChekData[1], RegexOptions.IgnoreCase);
+
+                        }
 
                         obj = new ScheduleSSTU(url, paramsStr[1], fl);
                     }
                     else
+                    {
+                        Console.WriteLine(paramsStr[1]);
                         return new WrapperAboveData<string>("Неправильное формат название группы ");
-                    
+                    }
                 }
-                else if (tmp[1] == "СГУ")
+                else if (paramsStr[0] == "СГУ")
                 {
                     if (Regex.IsMatch(paramsStr[1], ScheduleCGU.RegStringChekData[0], RegexOptions.ECMAScript))
                     {
@@ -119,7 +126,7 @@ public class WrapperSchedule : IAsyncLoaDatable
             {
                 if (reader.HasRows) // если есть данные
                 {
-
+                    reader.Read();
                     url = (string)reader.GetValue(0);
 
                 }

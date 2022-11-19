@@ -33,13 +33,9 @@ internal class ScheduleCommand : Command
 
     public override string[] GetParamsArrStr(string message)
     {
-        string[] tex =message.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        string[] res =new string[tex.Length];
-        for(int i = 0; i < tex.Length; i++)
-        {
-            res[i]=tex[i];
-        }
-        
-        return res;
+        Regex regex = new Regex($"{Name}");
+        string[] tex =regex.Split(message)[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                
+        return tex;
     }
 }
