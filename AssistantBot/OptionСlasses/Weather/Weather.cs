@@ -19,6 +19,7 @@ public class Weather: IAsyncGetStringWeatherable
     public Weather(string locality)
     {
         this.geocodingData = new GeocodingOptions(locality, "ru", 1);
+        Console.WriteLine(this.geocodingData.Name);
     }
     private async Task<WeatherForecast> getWeather()
     {
@@ -41,7 +42,7 @@ public class Weather: IAsyncGetStringWeatherable
         StringBuilder res=new StringBuilder();
         res.AppendFormat($"Погода в {geocodingData.Name} на текущий момент:\n");
         res.AppendFormat(" Температура: ");
-        res.AppendFormat(forecast.CurrentWeather.Temperature+ "°C;\n");
+        res.AppendFormat(Math.Floor(forecast.CurrentWeather.Temperature)+ "°C;\n");
         res.AppendFormat(" Давление: ");
         res.AppendFormat(Math.Floor(forecast.Hourly.Surface_pressure[index] /1.33317)+ " мм рт. ст.;\n");
         res.AppendFormat(" Осадки: ");
@@ -63,7 +64,7 @@ public class Weather: IAsyncGetStringWeatherable
         {
             res.AppendFormat(" " + DateTime.Parse(forecast.Hourly.Time[i]).ToString("t")+"\n");
             res.AppendFormat(" Температура: ");
-            res.AppendFormat(forecast.Hourly.Temperature_2m[i] + "°C;\n");
+            res.AppendFormat(Math.Floor(forecast.Hourly.Temperature_2m[i]) + "°C;\n");
             res.AppendFormat(" Давление: ");
             res.AppendFormat(Math.Floor(forecast.Hourly.Surface_pressure[i] / 1.33317) + " мм рт. ст.;\n");
             res.AppendFormat(" Осадки: ");
@@ -89,7 +90,7 @@ public class Weather: IAsyncGetStringWeatherable
             res.AppendFormat(" " + getWeekDay(DateTime.Parse(forecast.Daily.Time[i]).DayOfWeek)+"\n");
             float tmp = (forecast.Daily.Apparent_temperature_max[i] + forecast.Daily.Apparent_temperature_min[i]) / 2;
             res.AppendFormat(" Температура: ");
-            res.AppendFormat(tmp + " мм рт. ст.;\n");
+            res.AppendFormat(Math.Floor(tmp) + " °C;\n");
             res.AppendFormat(" Осадки: ");
             res.AppendFormat(namePrecipitation((int)forecast.Daily.Weathercode[i]) + "\n");
             res.AppendFormat(" Количество осадков: ");
@@ -110,7 +111,7 @@ public class Weather: IAsyncGetStringWeatherable
             return await getStringCurrentWeather();
         else if (Regex.IsMatch(currenOrWeek, @"[Нн]а неделю"))
             return await getStringWeekWeather();
-        else if (Regex.IsMatch(currenOrWeek, "[Нн] сегодня"))
+        else if (Regex.IsMatch(currenOrWeek, "[Нн]а сегодня"))
             return await getStringWeekHourly();
         else
             return "Такой погоды нет!";

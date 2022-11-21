@@ -19,7 +19,7 @@ public static  class StandardBot
 
         new StartCommand(),
         new ScheduleCommand(),
-        //new WeatherCommand(),
+        new WeatherCommand(),
         //new GamesCommand(),
         //new HelloCommand(),
         new FunCommand()

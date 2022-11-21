@@ -1,5 +1,6 @@
 ﻿using JobWithData;
 using OptionСlasses.Weather;
+using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -32,14 +33,15 @@ internal class WeatherCommand : Command
     }
     public override string[] GetParamsArrStr(string message)
     {
-        string[] tex = message.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        string[] res = new string[tex.Length - 1];
+        Regex regex = new Regex($"{Name}");
+        string[] tex = regex.Split(message)[1].Split(",", StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < tex.Length; i++)
         {
-            res[i] = tex[i];
+            tex[i]=tex[i].Trim();
         }
+        return tex;
 
-        return res;
+        
     }
 
 

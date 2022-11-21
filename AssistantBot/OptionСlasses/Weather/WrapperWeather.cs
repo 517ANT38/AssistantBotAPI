@@ -13,7 +13,8 @@ public class WrapperWeather : IAsyncGetStringWeatherable
     private string locity;
     public WrapperWeather(string locity)
     {
-        this.locity = locity.Split("r")[1];
+        //this.locity = locity.Split("r")[1];
+        this.locity = locity;
     }
     string Locity { get { return locity; } }
     public async Task<string> getStringWeather(string currenOrWeek = "Текущая")
