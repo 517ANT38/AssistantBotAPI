@@ -1,4 +1,5 @@
 ﻿using JobWithData;
+using OptionСlasses.Help;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -10,19 +11,18 @@ public class StartCommand : Command
 
     public override bool Contains(string message)
     {
-        
-
         return message.Contains(this.Name);
     }
     
 
-    public override Task<Message> Execute(long chatId, TelegramBotClient client, params string[] arr)
+    public async override Task<Message> Execute(long chatId, TelegramBotClient client, params string[] arr)
     {
-        throw new NotImplementedException();
+        string res = "<b>Вас приветствует Ассистент-Бот, что я могу:</b>" + Environment.NewLine;
+        Help help = new Help();
+        res += help.GetDescriptionOfcommandParad();
+        return await client.SendTextMessageAsync(chatId, res, parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
+
     }
 
-    public override string[] GetParamsArrStr(string message)
-    {
-        throw new NotImplementedException();
-    }
+
 }
