@@ -42,10 +42,10 @@ public class WrapperSchedule : IAsyncLoaDatable
                     
                     if (Regex.IsMatch(paramsStr[1], ScheduleSSTU.RegStringChekData[0], RegexOptions.ECMAScript))
                     {
-                        if (paramsStr.Count > 2)
+                        if (paramsStr.Count > 1)
                         {
-                            string a=String.Join(" ", paramsStr[2], paramsStr[3]);
-                            fl = !Regex.IsMatch(a, ScheduleSSTU.RegStringChekData[1], RegexOptions.IgnoreCase);
+                            //string a=String.Join(" ", paramsStr[2], paramsStr[3]);
+                            fl = !Regex.IsMatch(paramsStr[1], ScheduleSSTU.RegStringChekData[1], RegexOptions.IgnoreCase);
 
                         }
 
@@ -117,7 +117,7 @@ public class WrapperSchedule : IAsyncLoaDatable
     {
         string? url = null;
         string command = $"SELECT url_u from University_url WHERE University_name='{p}'";
-        using (var connection = new SqliteConnection(@"Data Source=C:\Users\user\source\repos\AssistantBot\AssistantBot\AssistentData\AssistentBotDataBase.db"))
+        using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db"))
         {
             connection.Open();
             SqliteCommand sqliteCommand = new SqliteCommand(command, connection);

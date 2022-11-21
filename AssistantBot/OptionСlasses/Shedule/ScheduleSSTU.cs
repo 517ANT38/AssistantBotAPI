@@ -158,7 +158,7 @@ public class ScheduleSSTU: IAsyncLoaDatable
         StringBuilder text = new StringBuilder();
         foreach (var item in html.SelectNodes(".//text()"))
         {
-            text.AppendFormat(" "+ TextBearbeiten(item.InnerText));
+            text.Append(" "+ TextBearbeiten(item.InnerText));
             
         }
         text=text.Replace("&mdash;", "").Replace("&nbsp;","");
@@ -170,14 +170,14 @@ public class ScheduleSSTU: IAsyncLoaDatable
         
         Dictionary<Regex,string> arr = new Dictionary<Regex, string>()
         {
-            [new Regex(@"Иностранный язык")] = "\n" + "<i>           " + str + "</i>\n",
-            [new Regex(@"([1-2][0-9]|0[0-9]|3[1-2])\.(0[0-9]|1[0-2])")]= "<i>                              " + str+ "          </i>\n\n",
+            [new Regex(@"Иностранный язык")] = $"{Environment.NewLine}" + "<i>           " + str + $"</i>{Environment.NewLine}",
+            [new Regex(@"([1-2][0-9]|0[0-9]|3[1-2])\.(0[0-9]|1[0-2])")]= "<i>                              " + str+ $"          </i>{Environment.NewLine}{Environment.NewLine}",
             [new Regex(@"^((([0-1]|)[0-9]|2[1-3]):[0-5][0-9] - (([0-1]|)[0-9]|2[1-3]):[0-5][0-9])")]= "<i>                   " + str + "</i>",
-            [new Regex(@"((([0-9]|[1-2][0-5])\/[0-7][0-9][0-9])|СЗ-[1-2]|ВК[0-9])")] = "<i>  (" + str + ") </i>\n",
-            [new Regex(@"(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота)")] = "    -------------------------------------------------------------------------\n<b>                            " + str + "</b>\n",
-            [new Regex(@"(\(прак\)|\(лекц\))")] = "<i>                        " + str + "</i>\n",
-            [new Regex(@"[А-ЩЭ-ЯЁ][а-яё]{1,} [А-ЩЭ-ЯЁ][а-яё]{1,9}( [А-ЩЭ-ЯЁ][а-яё]{1,9}|)")]= "<u>         " + str + "</u>\n\n",
-            [new Regex(@"[А-ЩЭ-ЯЁ][а-яёА-ЩЭ-ЯЁ\-]{1,} [А-ЩЭ-ЯЁа-яё\-]{1,9}( [а-яёА-ЩЭ-ЯЁ\-]{1,9}|)")]= "<i>           " + str + "</i>\n",
+            [new Regex(@"((([0-9]|[1-2][0-5])\/[0-7][0-9][0-9])|СЗ-[1-2]|ВК[0-9])")] = "<i>  (" + str + $") </i>{Environment.NewLine}",
+            [new Regex(@"(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота)")] = $"-------------------------------------------------------------------------{Environment.NewLine}<b>                            " + str + $"</b>{Environment.NewLine}",
+            [new Regex(@"(\(прак\)|\(лекц\))")] = "<i>                        " + str + $"</i>{Environment.NewLine}",
+            [new Regex(@"[А-ЩЭ-ЯЁ][а-яё]{1,} [А-ЩЭ-ЯЁ][а-яё]{1,9}( [А-ЩЭ-ЯЁ][а-яё]{1,9}|)")]= "<u>         " + str + $"</u>{Environment.NewLine}{Environment.NewLine}",
+            [new Regex(@"[А-ЩЭ-ЯЁ][а-яёА-ЩЭ-ЯЁ\-]{1,} [А-ЩЭ-ЯЁа-яё\-]{1,9}( [а-яёА-ЩЭ-ЯЁ\-]{1,9}|)")]= "<i>           " + str + $"</i>{Environment.NewLine}",
             [new Regex(@"Подгр. [0-9]")]= "                      " + str ,
             
         };

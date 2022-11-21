@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -18,14 +19,14 @@ namespace AssistantBotAPI.Models.Commands
         public abstract bool Contains(string message);
         public virtual string[] GetParamsArrStr(string message)
         {
-            string[] tex = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            string[] res = new string[tex.Length - 1];
-            for (int i = 1, j = 0; i < tex.Length; i++, j++)
+            Regex regex = new Regex($"{Name}");
+            string[] tex = regex.Split(message)[1].Split(",", StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < tex.Length; i++)
             {
-                res[j] = tex[i];
+                tex[i] = tex[i].Trim();
             }
-            return res;
+            return tex;
         }
-        
+
     }
 }

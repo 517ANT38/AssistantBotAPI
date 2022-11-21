@@ -8,7 +8,7 @@ namespace AssistantBotAPI.Models.Commands;
 
 public class FunCommand : Command
 {
-    public override string Name => @"/FunCommand";
+    public override string Name => @"/funcommand";
 
     
 

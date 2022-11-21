@@ -31,14 +31,14 @@ internal class ScheduleCommand : Command
         
     }
 
-    public override string[] GetParamsArrStr(string message)
-    {
-        Regex regex = new Regex($"{Name}");
-        string[] tex =regex.Split(message)[1].Split(",", StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < tex.Length; i++)
-        {
-            tex[i] = tex[i].Trim();
-        }
-        return tex;
-    }
+    //public override string[] GetParamsArrStr(string message)
+    //{
+    //    Regex regex = new Regex($"{Name}");
+    //    string[] tex =regex.Split(message)[1].Split(",", StringSplitOptions.RemoveEmptyEntries);
+    //    for (int i = 0; i < tex.Length; i++)
+    //    {
+    //        tex[i] = tex[i].Trim();
+    //    }
+    //    return tex;
+    //}
 }

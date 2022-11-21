@@ -8,11 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ApplicationDefinition Include="AssistentData\AssistentBotDataBase.db" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.10" />
     <PackageReference Include="OpenMeteo.dotnet" Version="0.1.82" />
     <PackageReference Include="Telegram.Bot" Version="18.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AssistentData\AssistentBotDataBase.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

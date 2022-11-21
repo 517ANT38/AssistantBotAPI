@@ -23,8 +23,8 @@ public class Joke
         long countCort = 0;
         string sqlCountCrt = "SELECT count(2) from Joke" + $" WHERE Type='{type}'";
         string sqlExpession = "SELECT TextJoke FROM Joke" + $" WHERE Type='{type}';";
-        using (var connection = new SqliteConnection(@"Data Source=C:\Users\user\source\repos\AssistantBot\AssistantBot\AssistentData\AssistentBotDataBase.db"))
-        {
+        using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db")) 
+        { 
             connection.Open();
             SqliteCommand sqliteCommand = new SqliteCommand(sqlCountCrt, connection);
             SqliteCommand sqliteCommand1 = new SqliteCommand(sqlExpession, connection);

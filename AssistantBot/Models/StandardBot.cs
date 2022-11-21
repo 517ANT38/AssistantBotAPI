@@ -16,11 +16,11 @@ public static  class StandardBot
 	public const string pattrenGroup2 = @"^(б|м|с)[1-2]{0,1}-([^\w\sа-яЙйЫЪЬ]{4})-[1-5]{2}";
     private static ReadOnlyCollection<Command> commandsList = new List<Command>()
     {
-
+        new HelpCommand(),
         new StartCommand(),
         new ScheduleCommand(),
         new WeatherCommand(),
-        //new GamesCommand(),
+        
         //new HelloCommand(),
         new FunCommand()
 
