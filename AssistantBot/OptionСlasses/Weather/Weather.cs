@@ -38,52 +38,70 @@ public class Weather: IAsyncGetStringWeatherable
         WeatherForecast forecast = await getWeather();
         if (forecast == null) return "Такого города нет!";
         int index = DateTime.Now.Hour;
-        string res = $"Погода в {geocodingData.Name} на текущий момент:\n";
-        res += (" Температура: " + forecast.CurrentWeather.Temperature+ "°C;\n");
-        res += (" Давление: " + Math.Floor(forecast.Hourly.Surface_pressure[index] /1.33317)+ " мм рт. ст.;\n");
-        res +=" Осадки: "+namePrecipitation((int)forecast.Hourly.Weathercode[index])+ ";\n";
-        res += (" Количество осадков: " + forecast.Hourly.Precipitation[index] + " мм;\n");
-        res += (" Скорость ветра: " + forecast.CurrentWeather.Windspeed)+" м/с;\n";
-        res += " Направление ветра: " + getWindDirection(forecast.CurrentWeather.WindDirection) + "\n";
-        return res;
+        StringBuilder res=new StringBuilder();
+        res.AppendFormat($"Погода в {geocodingData.Name} на текущий момент:\n");
+        res.AppendFormat(" Температура: ");
+        res.AppendFormat(forecast.CurrentWeather.Temperature+ "°C;\n");
+        res.AppendFormat(" Давление: ");
+        res.AppendFormat(Math.Floor(forecast.Hourly.Surface_pressure[index] /1.33317)+ " мм рт. ст.;\n");
+        res.AppendFormat(" Осадки: ");
+        res.AppendFormat(namePrecipitation((int)forecast.Hourly.Weathercode[index])+ ";\n");
+        res.AppendFormat(" Количество осадков: ");
+        res.AppendFormat(forecast.Hourly.Precipitation[index] + " мм;\n");
+        res.AppendFormat(" Скорость ветра: ");
+        res.AppendFormat(forecast.CurrentWeather.Windspeed+" м/с;\n");
+        res.AppendFormat(" Направление ветра: ");
+        res.AppendFormat(getWindDirection(forecast.CurrentWeather.WindDirection) + "\n");
+        return res.ToString();
     }
     private async Task<string> getStringWeekHourly()
     {
         WeatherForecast forecast = await getWeather();
         if (forecast == null) return "Такого города нет!";
-        string res = $"Погода в {geocodingData.Name} на сегодня:\n";
+        StringBuilder res =new StringBuilder ($"Погода в {geocodingData.Name} на сегодня:\n");
         for(int i = 0; i < 24; i+=3)
         {
-            res += " " + DateTime.Parse(forecast.Hourly.Time[i]).ToString("t")+"\n";
-            res += (" Температура: " + forecast.Hourly.Temperature_2m[i] + "°C;\n");
-            res += (" Давление: " + Math.Floor(forecast.Hourly.Surface_pressure[i] / 1.33317) + " мм рт. ст.;\n");
-            res += " Осадки: " + namePrecipitation((int)forecast.Hourly.Weathercode[i]) + ";\n";
-            res += (" Количество осадков: " + forecast.Hourly.Precipitation[i] + " мм;\n");
-            res += (" Скорость ветра: " + forecast.Hourly.Windspeed_10m[i]) + " м/с;\n";
-            res += " Направление ветра: " + getWindDirection(forecast.Hourly.Winddirection_10m[i]) + "\n";
-            res += " ------------------------------------------------------- \n";
+            res.AppendFormat(" " + DateTime.Parse(forecast.Hourly.Time[i]).ToString("t")+"\n");
+            res.AppendFormat(" Температура: ");
+            res.AppendFormat(forecast.Hourly.Temperature_2m[i] + "°C;\n");
+            res.AppendFormat(" Давление: ");
+            res.AppendFormat(Math.Floor(forecast.Hourly.Surface_pressure[i] / 1.33317) + " мм рт. ст.;\n");
+            res.AppendFormat(" Осадки: ");
+            res.AppendFormat(namePrecipitation((int)forecast.Hourly.Weathercode[i]) + ";\n");
+            res.AppendFormat(" Количество осадков: ");
+            res.AppendFormat(forecast.Hourly.Precipitation[i] + " мм;\n");
+            res.AppendFormat(" Скорость ветра: ");
+            res.AppendFormat(forecast.Hourly.Windspeed_10m[i] + " м/с;\n");
+            res.AppendFormat(" Направление ветра: ");
+            res.AppendFormat(getWindDirection(forecast.Hourly.Winddirection_10m[i]) + "\n");
+            res.AppendFormat(" ------------------------------------------------------- \n");
         }
-        return res;
+        return res.ToString();
     }
     private async Task<string> getStringWeekWeather()
     {
         WeatherForecast forecast = await getWeather();
         if (forecast == null) return "Такого города нет!";
-        string res = $"Погода в {geocodingData.Name} на неделю:\n";
+        StringBuilder res =new StringBuilder($"Погода в {geocodingData.Name} на неделю:\n");
         for (int i = 0; i < 7; i++)
         {
-            res += " " + DateTime.Parse(forecast.Daily.Time[i]).ToString("D");
-            res+=" "+ getWeekDay(DateTime.Parse(forecast.Daily.Time[i]).DayOfWeek)+"\n";
+            res.AppendFormat(" " + DateTime.Parse(forecast.Daily.Time[i]).ToString("D"));
+            res.AppendFormat(" " + getWeekDay(DateTime.Parse(forecast.Daily.Time[i]).DayOfWeek)+"\n");
             float tmp = (forecast.Daily.Apparent_temperature_max[i] + forecast.Daily.Apparent_temperature_min[i]) / 2;
-            res +=" Температура: "+tmp + " мм рт. ст.;\n";
-            res += " Осадки: " + namePrecipitation((int)forecast.Daily.Weathercode[i]) + "\n";
-            res += " Количество осадков: " + forecast.Daily.Precipitation_sum[i]+ " мм;\n";
-            res += " Скорость ветра: " + forecast.Daily.Windspeed_10m_max[i] + " м/с;\n";
-            res += " Направление ветра: " + getWindDirection(forecast.Daily.Winddirection_10m_dominant[i]) + "\n";
-            res += " ------------------------------------------------------- \n";
+            res.AppendFormat(" Температура: ");
+            res.AppendFormat(tmp + " мм рт. ст.;\n");
+            res.AppendFormat(" Осадки: ");
+            res.AppendFormat(namePrecipitation((int)forecast.Daily.Weathercode[i]) + "\n");
+            res.AppendFormat(" Количество осадков: ");
+            res.AppendFormat(forecast.Daily.Precipitation_sum[i]+ " мм;\n");
+            res.AppendFormat(" Скорость ветра: "); 
+            res.AppendFormat(forecast.Daily.Windspeed_10m_max[i] + " м/с;\n");
+            res.AppendFormat(" Направление ветра: ");
+            res.AppendFormat(getWindDirection(forecast.Daily.Winddirection_10m_dominant[i]) + "\n");
+            res.AppendFormat(" ------------------------------------------------------- \n");
         }
         //forecast.Daily.Winddirection_10m_dominant;
-        return res;
+        return res.ToString();
         
     }
     public async Task<string> getStringWeather(string currenOrWeek="Текущая")

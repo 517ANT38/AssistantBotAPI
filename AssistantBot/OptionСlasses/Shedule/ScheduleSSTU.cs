@@ -5,6 +5,7 @@ using Fizzler.Systems.HtmlAgilityPack;
 using JobWithData;
 using ExceptionBot;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace OptionСlasses.Shedule;
 public class ScheduleSSTU: IAsyncLoaDatable
@@ -153,16 +154,16 @@ public class ScheduleSSTU: IAsyncLoaDatable
     
     private static string HtmlToPlainText(HtmlNode html)
     {
-        
-        string text = "";
+
+        StringBuilder text = new StringBuilder();
         foreach (var item in html.SelectNodes(".//text()"))
         {
-            text += (" "+ TextBearbeiten(item.InnerText));
+            text.AppendFormat(" "+ TextBearbeiten(item.InnerText));
             
         }
         text=text.Replace("&mdash;", "").Replace("&nbsp;","");
         
-        return text;
+        return text.ToString();
     }
     private static string TextBearbeiten(string str)
     {
