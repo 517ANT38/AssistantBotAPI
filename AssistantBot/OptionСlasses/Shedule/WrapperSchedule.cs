@@ -42,10 +42,11 @@ public class WrapperSchedule : IAsyncLoaDatable
                     
                     if (Regex.IsMatch(paramsStr[1], ScheduleSSTU.RegStringChekData[0], RegexOptions.ECMAScript))
                     {
-                        if (paramsStr.Count > 1)
+                        if (paramsStr.Count > 2)
                         {
+                            //Console.WriteLine(paramsStr[1]);
                             //string a=String.Join(" ", paramsStr[2], paramsStr[3]);
-                            fl = !Regex.IsMatch(paramsStr[1], ScheduleSSTU.RegStringChekData[1], RegexOptions.IgnoreCase);
+                            fl = !Regex.IsMatch(paramsStr[2], ScheduleSSTU.RegStringChekData[1], RegexOptions.IgnoreCase);
 
                         }
 

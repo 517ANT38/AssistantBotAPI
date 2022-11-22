@@ -2,6 +2,7 @@
 //using Telegram.Bot.Types;
 
 using JobWithData;
+using OptionСlasses.SaveUpadateSheduleDB;
 using OptionСlasses.Shedule;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
@@ -24,9 +25,11 @@ internal class ScheduleCommand : Command
 
         WrapperSchedule schedule = new WrapperSchedule(arr);
         WrapperAboveData<string> data =  await schedule.LoadData();
-        var res = data.GetData();
-        Console.WriteLine(String.Join("\n", res));
-        return await client.SendTextMessageAsync(chatId, String.Join("\n",res), parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
+        var res = String.Join("\n", data.GetData());
+        SUSheduleDb sU = new SUSheduleDb(chatId, res);
+        sU.paradSetOfTimeClearShed();
+
+        return await client.SendTextMessageAsync(chatId, res, parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
 
         
     }
