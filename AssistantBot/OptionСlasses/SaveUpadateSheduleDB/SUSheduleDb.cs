@@ -11,40 +11,40 @@ namespace OptionСlasses.SaveUpadateSheduleDB;
 public class SUSheduleDb
 {
     private static TimeSpan time=new TimeSpan(0,0,0,40);
-    private long chatID;
-    string shedule;
-    public SUSheduleDb(long chatID, string shedule)
+    private int hash;
+    private string shedule;
+    public SUSheduleDb(int hash, string shedule)
     {
-        this.chatID = chatID;
+        this.hash = hash;
         this.shedule = shedule;
     }
-    public long ChatID { get { return chatID; } }
+    public int Hash { get { return hash; } }
     public string Shedule { get { return shedule; } }
-    private static void SetSheduleinDB(long chatID,string rasp)
+    private static void SetSheduleinDB(int hash,string rasp)
     {
         using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db"))
         { 
             connection.Open();
-            string sql = $"REPLACE INTO ScheduleSaved (chatID,schedule) VALUES({chatID},'{rasp}')";
+            string sql = $"REPLACE INTO ScheduleSaved (hash_p,schedule) VALUES({hash},'{rasp}')";
             SqliteCommand sqliteCommand = new SqliteCommand(sql, connection);
             sqliteCommand.ExecuteNonQuery();
         }
         
     }
-    private static void ClearFliedShedule(long chatID, string rasp)
+    private static void ClearFliedShedule(int hash)
     {
         using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db"))
         {
             connection.Open();
-            string sql = $"REPLACE INTO ScheduleSaved (chatID,schedule) VALUES({chatID},NULL)";
+            string sql = $"REPLACE INTO ScheduleSaved (hash_p,schedule) VALUES({hash},NULL)";
             SqliteCommand sqliteCommand = new SqliteCommand(sql, connection);
             sqliteCommand.ExecuteNonQuery();
         }
         Console.WriteLine("Delete data");
     }
-    public async void paradSetOfTimeClearShed()
+    public  void paradSetOfTimeClearShed()
     {
-        SetSheduleinDB(ChatID, Shedule);
+        SetSheduleinDB(Hash, Shedule);
        // Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         //var task = new Task(() => { Console.WriteLine("@@@@@"); });
         //task.ContinueWith(asd =>
@@ -57,11 +57,12 @@ public class SUSheduleDb
         var task = new Thread(() =>
           {
               Thread.Sleep(time);
-              ClearFliedShedule(ChatID, Shedule);
+              ClearFliedShedule(Hash);
           });
         task.Start();
         
     }
+    
 
 }
 

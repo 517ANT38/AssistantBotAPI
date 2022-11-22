@@ -21,15 +21,13 @@ internal class ScheduleCommand : Command
     public override async Task<Message> Execute(long chatId, TelegramBotClient client, params string[] arr)
     {
 
-        
+        IAsyncLoaDatable wrapShedSetGet=new WrapShedSetGetDbClass(chatId, arr);
+        var res = await wrapShedSetGet.LoadData();
 
-        WrapperSchedule schedule = new WrapperSchedule(arr);
-        WrapperAboveData<string> data =  await schedule.LoadData();
-        var res = String.Join("\n", data.GetData());
-        SUSheduleDb sU = new SUSheduleDb(chatId, res);
-        sU.paradSetOfTimeClearShed();
 
-        return await client.SendTextMessageAsync(chatId, res, parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
+
+
+        return await client.SendTextMessageAsync(chatId, res.Item2, parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
 
         
     }

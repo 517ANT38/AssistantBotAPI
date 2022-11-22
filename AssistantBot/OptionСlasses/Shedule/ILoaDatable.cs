@@ -9,6 +9,6 @@ namespace OptionСlasses.Shedule;
 
 public interface IAsyncLoaDatable
 {
-        Task<WrapperAboveData<string>> LoadData();
+        Task<(bool,string)> LoadData();
 }
 

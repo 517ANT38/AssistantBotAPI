@@ -30,9 +30,9 @@ public class Joke
             SqliteCommand sqliteCommand1 = new SqliteCommand(sqlExpession, connection);
             using (SqliteDataReader reader = sqliteCommand.ExecuteReader())
             {
-                if (reader.HasRows) // если есть данные
+                if (reader.Read()) // если есть данные
                 {
-                    reader.Read();
+                    
                     countCort = (long)reader.GetValue(0);
 
 

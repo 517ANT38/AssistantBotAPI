@@ -38,7 +38,7 @@ public class ScheduleCGU:IAsyncLoaDatable
         this.fl = fl;
     }
 
-    public async Task<WrapperAboveData<string>> LoadData()
+    public async Task<(bool,string)> LoadData()
     {
         throw new NotImplementedException();
     }

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace JobWithData;
 
-public class WrapperAboveData<T> 
+public class WrapperAboveData 
 {
-    private List<T> obt;
+    private List<string> obt;
 
-    private T v;
-    public WrapperAboveData(params T[] ts):this(ts.ToList()){}
-    public WrapperAboveData(List<T> ts)
+    private string v;
+    public WrapperAboveData(params string[] ts):this(ts.ToList()){}
+    public WrapperAboveData(List<string> ts)
     {
         if (ts.Count < 2)
         {
@@ -21,17 +21,13 @@ public class WrapperAboveData<T>
         }
         else
         {
-            obt = new List<T>(ts);
-            v = default(T);
+            obt = new List<string>(ts);
+            v = null;
         }
     }
-    public List<T> GetData()
+    public string ToString()
     {
-        if(obt == null)
-        {
-            obt = new List<T>() {v};
-        }
-        return new List<T>(obt);
+        return null;
     }
     
     

@@ -20,7 +20,7 @@ public class WrapperSchedule : IAsyncLoaDatable
         paramsStr =new List<string>(arr);
     }
 
-    public async Task<WrapperAboveData<string>> LoadData()
+    public async Task<(bool,string)> LoadData()
     {
         IAsyncLoaDatable obj=null;
         string? url = null;
@@ -28,15 +28,15 @@ public class WrapperSchedule : IAsyncLoaDatable
         try
         {
             //string[] tmp = paramsStr[0].Split(' ');
-            Console.WriteLine(paramsStr[0]);
+            
             if (Regex.IsMatch(paramsStr[0], RegexWUS, RegexOptions.IgnoreCase))
             {
                 //Ищем вуз в базе данных
                 url = getUrlUniversitySQLite(paramsStr[0]);
                 if (url == null)
-                    return new WrapperAboveData<string>("Такого вуза нет");
+                    return (false,"Такого вуза нет");
                 //if(tmp.Length <2)
-                //    return new WrapperAboveData<string>("Вуз не задан");
+                //    return ("Вуз не задан");
                 if (paramsStr[0] == "СГТУ")
                 {
                     
@@ -47,7 +47,7 @@ public class WrapperSchedule : IAsyncLoaDatable
                             //Console.WriteLine(paramsStr[1]);
                             //string a=String.Join(" ", paramsStr[2], paramsStr[3]);
                             fl = !Regex.IsMatch(paramsStr[2], ScheduleSSTU.RegStringChekData[1], RegexOptions.IgnoreCase);
-
+                            Console.WriteLine(fl);
                         }
 
                         obj = new ScheduleSSTU(url, paramsStr[1], fl);
@@ -55,7 +55,7 @@ public class WrapperSchedule : IAsyncLoaDatable
                     else
                     {
                         Console.WriteLine(paramsStr[1]);
-                        return new WrapperAboveData<string>("Неправильное формат название группы ");
+                        return (false,"Неправильное формат название группы ");
                     }
                 }
                 else if (paramsStr[0] == "СГУ")
@@ -73,43 +73,43 @@ public class WrapperSchedule : IAsyncLoaDatable
                                 obj = new ScheduleCGU(url, paramsStr[1], paramsStr[2], paramsStr[3], fl);
                             }
                             else
-                                return new WrapperAboveData<string>("Неправильное формат название группы ");
+                                return (false,"Неправильное формат название группы ");
 
                         }
                         else
-                            return new WrapperAboveData<string>("Неправильное формат название формы обучения ");
+                            return (false,"Неправильное формат название формы обучения ");
 
                     }
                     else
-                        return new WrapperAboveData<string>("Неправильное формат факультета(института)");
+                        return (false,"Неправильное формат факультета(института)");
 
                 }
 
             }
             else
-                return new WrapperAboveData<string>("Неправильный параметр названия вуза!");         
+                return (false,"Неправильный параметр названия вуза!");         
             
 
         }
         catch (IndexOutOfRangeException ex)
         {
-            return new WrapperAboveData<string>("Проверьте параметры расписания,их передано слишком много!");
+            return (false,"Проверьте параметры расписания,их передано слишком много!");
         }
         catch (GroupNotFoundException e)
         {
-            return new WrapperAboveData<string>(e.Message);
+            return (false,e.Message);
         }
         catch (InvalidOperationException e)
         {
-            return new WrapperAboveData<string>("Неправильный адрес сайта");
+            return (false,"Неправильный адрес сайта");
         }
         catch (HttpRequestException e)
         {
-            return new WrapperAboveData<string>("Проверьте подключение к сети. Запустите команду еще раз,назвав группу и адрес сайта");
+            return (false,"Проверьте подключение к сети. Запустите команду еще раз,назвав группу и адрес сайта");
         }
         catch (TaskCanceledException e)
         {
-            return new WrapperAboveData<string>("Время ожидания истекло. Запустите команду еще раз,назвав группу и адрес сайта");
+            return (false,"Время ожидания истекло. Запустите команду еще раз,назвав группу и адрес сайта");
 
         }
         return await obj.LoadData();
@@ -125,9 +125,9 @@ public class WrapperSchedule : IAsyncLoaDatable
 
             using (SqliteDataReader reader = sqliteCommand.ExecuteReader())
             {
-                if (reader.HasRows) // если есть данные
+                if (reader.Read()) // если есть данные
                 {
-                    reader.Read();
+                    
                     url = (string)reader.GetValue(0);
 
                 }
@@ -135,5 +135,6 @@ public class WrapperSchedule : IAsyncLoaDatable
         }
         return url;
     }
+   
 }
 

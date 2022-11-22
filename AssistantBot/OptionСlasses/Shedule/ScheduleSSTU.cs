@@ -49,7 +49,7 @@ public class ScheduleSSTU: IAsyncLoaDatable
     {
         using var client = new HttpClient();
         var response = await client.GetAsync(url);
-        Console.WriteLine(response);
+        
 
         return await response.Content.ReadAsStringAsync();
 
@@ -80,7 +80,7 @@ public class ScheduleSSTU: IAsyncLoaDatable
         return await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<WrapperAboveData<string>> LoadData()
+    public async Task<(bool,string)> LoadData()
     {
         string str = await creatUrlSchedule(group, url);
         
@@ -89,9 +89,9 @@ public class ScheduleSSTU: IAsyncLoaDatable
         html.LoadHtml(str);
         var document = html.DocumentNode;
         var nodes = getListNodeSelectClass(document.QuerySelector(".week").ChildNodes);
-        if (nodes == null) { return new WrapperAboveData<string>("Расписание не найдено"); }
+        if (nodes == null) { return (false,"Расписание не найдено"); }
 
-        Console.WriteLine(nodes[0].InnerHtml);
+        
         Dictionary<DayOfWeek, string> res = new Dictionary<DayOfWeek, string>()
         {
             [DayOfWeek.Monday] =null,
@@ -106,16 +106,16 @@ public class ScheduleSSTU: IAsyncLoaDatable
         for (int i = 0; i < nodes.Count; i++)
         {
             string tmp=nodes[i].QuerySelector(".day-header>div>span").InnerText;
-            Console.WriteLine(tmp);
+            
             res[getDay(tmp)]= HtmlToPlainText(nodes[i]);
             
         }
         
         if(flag)
-            return new WrapperAboveData<string>(new List<string>(res.Values));
+            return (true,String.Join(Environment.NewLine, new List<string>(res.Values)));
         if(DateTime.Now.DayOfWeek!= DayOfWeek.Sunday)
-            return new WrapperAboveData<string>(res[DateTime.Now.DayOfWeek]);
-        else return new WrapperAboveData<string>("Расписания на воскресенье нет");
+            return (true,res[DateTime.Now.DayOfWeek]);
+        else return (false,"Расписания на воскресенье нет");
     }
     private  static DayOfWeek getDay(string str)
     {
