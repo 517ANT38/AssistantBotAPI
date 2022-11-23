@@ -20,7 +20,7 @@ public class ScheduleSSTU: IAsyncLoaDatable
         {
             List<string> ts = new List<string>()
             {
-          //      @"^(?:(http(s|)|ftp)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+$",
+          //      ,
                 @"^(б|м|с)[1-5]{0,1}-([^\w\sа-яЙйЫЪЬ]{3,4}(оз|з|ипу|озипу|))-[1-5]{2}(| )",
                @"[Нн]а сегодня"
             };
@@ -167,25 +167,39 @@ public class ScheduleSSTU: IAsyncLoaDatable
     }
     private static string TextBearbeiten(string str)
     {
-        
+       
         Dictionary<Regex,string> arr = new Dictionary<Regex, string>()
         {
             [new Regex(@"Иностранный язык")] = $"{Environment.NewLine}" + "<i>           " + str + $"</i>{Environment.NewLine}",
-            [new Regex(@"([1-2][0-9]|0[0-9]|3[1-2])\.(0[0-9]|1[0-2])")]= "<i>                              " + str+ $"          </i>{Environment.NewLine}{Environment.NewLine}",
+            [new Regex(@"([1-2][0-9]|0[0-9]|3[1-2])\.(0[0-9]|1[0-2])")]= "<i>                              " + str+ $"          </i>{Environment.NewLine}",
             [new Regex(@"^((([0-1]|)[0-9]|2[1-3]):[0-5][0-9] - (([0-1]|)[0-9]|2[1-3]):[0-5][0-9])")]= "<i>                   " + str + "</i>",
             [new Regex(@"((([0-9]|[1-2][0-5])\/[0-7][0-9][0-9])|СЗ-[1-2]|ВК[0-9])")] = "<i>  (" + str + $") </i>{Environment.NewLine}",
             [new Regex(@"(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота)")] = $"-------------------------------------------------------------------------{Environment.NewLine}<b>                            " + str + $"</b>{Environment.NewLine}",
             [new Regex(@"(\(прак\)|\(лекц\))")] = "<i>                        " + str + $"</i>{Environment.NewLine}",
             [new Regex(@"[А-ЩЭ-ЯЁ][а-яё]{1,} [А-ЩЭ-ЯЁ][а-яё]{1,9}( [А-ЩЭ-ЯЁ][а-яё]{1,9}|)")]= "<u>         " + str + $"</u>{Environment.NewLine}{Environment.NewLine}",
-            [new Regex(@"[А-ЩЭ-ЯЁ][а-яёА-ЩЭ-ЯЁ\-]{1,} [А-ЩЭ-ЯЁа-яё\-]{1,9}( [а-яёА-ЩЭ-ЯЁ\-]{1,9}|)")]= "<i>           " + str + $"</i>{Environment.NewLine}",
+            [new Regex(@"[А-ЩЭ-ЯЁ][а-яёА-ЩЭ-ЯЁ\-]{1,} [А-ЩЭ-ЯЁа-яё\-]{1,9}( [а-яёА-ЩЭ-ЯЁ\-]{1,9}|)")]= "<i>           " + GetFormatNormStr(str) + $"</i>{Environment.NewLine}",
             [new Regex(@"Подгр. [0-9]")]= "                      " + str ,
             
         };
+        
         foreach (var item in arr)
         {
             if(item.Key.IsMatch(str))
                 return item.Value;
         }
+        return str;
+    }
+    private static string GetFormatNormStr(string tmp)
+    {
+        string? str = null;
+        if (tmp.Length > 31)
+        {
+            string[] aw = tmp.Split(" ", 2);
+            aw[0] = new string(' ', aw[0].Length/2) + aw[0];
+            aw[1] = "      "+aw[1];
+            str = String.Join(Environment.NewLine, aw);
+        }
+        else str = tmp;
         return str;
     }
 }

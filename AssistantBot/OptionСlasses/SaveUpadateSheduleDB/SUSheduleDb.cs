@@ -10,7 +10,7 @@ namespace OptionСlasses.SaveUpadateSheduleDB;
 
 public class SUSheduleDb
 {
-    private static int days_p=7;
+    private static int days_p=0;
     private int hash;
     private string shedule;
     public SUSheduleDb(int hash, string shedule)
@@ -36,10 +36,11 @@ public class SUSheduleDb
         using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db"))
         {
             connection.Open();
-            string sql = $"DELETE FROM ScheduleSaved  WHERE ((date_p<=date('now','-{days_p} day')));";
+            string sql = $"DELETE FROM ScheduleSaved  WHERE (date_p<=date('now','-{days_p} day'));";
             SqliteCommand sqliteCommand = new SqliteCommand(sql, connection);
-           
-            
+            sqliteCommand.ExecuteNonQuery();
+           // Console.WriteLine(sqliteCommand.ExecuteNonQuery());
+
         }
         
     }

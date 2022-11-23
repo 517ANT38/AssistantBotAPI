@@ -14,6 +14,7 @@ public static  class StandardBot
 	public const string stickerNotNice = "https://raw.githubusercontent.com/517ANT38/imagesStikers/7f4da521aac29c0b73a95c63846d9a1bbbd77ba6/foto1.webp";
 	public const string pattrenGroup = @"^(б|м|с)[1-2]{0,1}-([^\w\sъьЙйыЫЪЬ]{4})-[1-5]{2}";
 	public const string pattrenGroup2 = @"^(б|м|с)[1-2]{0,1}-([^\w\sа-яЙйЫЪЬ]{4})-[1-5]{2}";
+    public const string patternUri = @"^(?:(http(s|)|ftp)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+$";
     private static ReadOnlyCollection<Command> commandsList = new List<Command>()
     {
         new HelpCommand(),

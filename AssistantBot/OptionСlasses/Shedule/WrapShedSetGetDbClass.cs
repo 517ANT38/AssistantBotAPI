@@ -38,7 +38,7 @@ public class WrapShedSetGetDbClass : IAsyncLoaDatable
                 
                 SUSheduleDb sU = new SUSheduleDb(hash, data.Item2);
                 sU.SetSheduleinDB();
-                Console.WriteLine("hjdfghjd");
+                
             }
             
             return data;

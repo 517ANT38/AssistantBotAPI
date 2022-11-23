@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.1" />
+    <PackageReference Include="GoogleApi" Version="4.2.6" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.10" />
     <PackageReference Include="OpenMeteo.dotnet" Version="0.1.82" />

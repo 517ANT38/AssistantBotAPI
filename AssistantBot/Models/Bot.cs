@@ -1,8 +1,10 @@
 ﻿using AssistantBotAPI.Models.Commands;
+using AssistantBotAPI.OptionСlasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -124,47 +126,25 @@ namespace AssistantBotAPI.Models
             //Console.WriteLine(command.Name);
             if(command == null)
             {
-                string str = null;
-                if(text=="Привет"|| text == "Привет"|| text == "здравствуйте" || text == "Здравствуйте")
+                IntelligentTextMessaging intelligent = new IntelligentTextMessaging(text);
+                string str = intelligent.GetTextOrStickResponse();
+                if (Regex.IsMatch(str, StandardBot.patternUri))
                 {
-                    str = StandardBot.messageHello;
+                    return await botClient.SendStickerAsync(
+                        chatId: chatId,
+                        sticker: str,
+                        cancellationToken: cancellationToken);
                 }
                 else
-                {
-                    if (text=="Хорошо" || text == "хорошо" || text == "отлично" || text == "Отлично")
-                    {
-                        return await botClient.SendStickerAsync(
-                            chatId: chatId,
-                            sticker: StandardBot.stickerNice,
-                            cancellationToken: cancellationToken
-                            );
-                    }
-                    else if(text == "Плохо" || text == "плохо" || text == "ужасно" || text == "Ужасно")
-                    {
-                        return await botClient.SendStickerAsync(
-                            chatId: chatId,
-                            sticker: StandardBot.stickerNotNice,
-                            cancellationToken: cancellationToken
-                            );
-                    }
-                    else str = StandardBot.messageHelp;
-
-                }
-                
-                return await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: str,
-                cancellationToken: cancellationToken,
-                parseMode:Telegram.Bot.Types.Enums.ParseMode.Html
-                );
+                    return await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: str,
+                        cancellationToken: cancellationToken,
+                        parseMode:Telegram.Bot.Types.Enums.ParseMode.Html
+                    );
             }
             else
             {
-                //return await botClient.SendTextMessageAsync(
-                //chatId: chatId,
-                //text: "Ok",
-                //cancellationToken: cancellationToken
-                //);
                 return await command.Execute(chatId, botClient, command.GetParamsArrStr(text));
             }
             
