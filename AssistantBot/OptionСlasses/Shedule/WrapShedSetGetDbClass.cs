@@ -22,6 +22,7 @@ public class WrapShedSetGetDbClass : IAsyncLoaDatable
     }
     public async Task<(bool,string)> LoadData()
     {
+
         var tmpRes = GetSheduleinDB(chatId,arr);
         if (tmpRes.Item1)
         {
@@ -35,7 +36,8 @@ public class WrapShedSetGetDbClass : IAsyncLoaDatable
             {
                 int hash=HashCodeForBD(String.Join(" ",arr) + chatId.ToString());
                 SUSheduleDb sU = new SUSheduleDb(hash, data.Item2);
-                sU.paradSetOfTimeClearShed();
+                sU.SetSheduleinDB();
+                
             }
             
             return data;
@@ -47,9 +49,10 @@ public class WrapShedSetGetDbClass : IAsyncLoaDatable
 
         using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db"))
         {
+            int days_p = 7;
             connection.Open();
             int hash = HashCodeForBD(String.Join(" ", arr)+chatID.ToString());
-            string sql = $"SELECT schedule FROM ScheduleSaved WHERE hash_p={hash}";
+            string sql = $"SELECT schedule FROM ScheduleSaved WHERE ((date_p<date('now','-{days_p} day')) and hash_p={hash});";
             SqliteCommand sqliteCommand = new SqliteCommand(sql, connection);
             using (SqliteDataReader reader = sqliteCommand.ExecuteReader())
             {
