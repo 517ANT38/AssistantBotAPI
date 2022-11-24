@@ -1,5 +1,6 @@
 ﻿using AssistantBotAPI.Models.Commands;
 using AssistantBotAPI.OptionСlasses;
+using OptionСlasses.Reminder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,9 +100,10 @@ namespace AssistantBotAPI.Models
 
         private  async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            
             if (update.Message is not { } message)
                 return;
-            
+            Reminder.remind(update.Message.Chat.Id);
             if (message.Text is not { } messageText)
                 return;
             var chatId = message.Chat.Id;

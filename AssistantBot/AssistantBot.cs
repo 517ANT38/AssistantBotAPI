@@ -11,8 +11,8 @@ using File = System.IO.File;
 using OpenMeteo;
 using System.Security.Cryptography;
 using System.Text;
-using GoogleApi;
-using OptionСlasses.Translator;
+
+using OptionСlasses.Reminder;
 
 namespace AssistantBotAPI
 {
@@ -23,11 +23,11 @@ namespace AssistantBotAPI
         static async Task Main(String[] args)
         {
             //{
-            //Bot bot = new Bot();
-            //await bot.startBot();
+            Bot bot = new Bot();
+            await bot.startBot();
             //Translator translator = new Translator("Hello world");
             //Console.WriteLine(translator.GetTranslation());
-            var a = new GoogleTranslate("auto", "germany");
+            //  var a = new GoogleTranslate("auto", "germany");
             //var h = new HttpClient();
             //var a = await h.GetAsync("https://translate.google.ru/?sl=ru&tl=en&text=Привет&op=translate");
             //var b=await a.Content.ReadAsStringAsync();
