@@ -2,6 +2,7 @@
 using AssistantBotAPI.OptionСlasses;
 using OptionСlasses.Calendar;
 using OptionСlasses.Reminder;
+using OptionСlasses.TimeButton;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,24 +22,24 @@ namespace AssistantBotAPI.Models
     {
         public TelegramBotClient botClient;
         private List<Command> commandsList;
-        
+
         public Bot(List<Command> commands)
         {
 
 
             commandsList = new List<Command>(StandardBot.CommandsList);
-            
-            if(commands != null)
-                  commandsList = commandsList.Concat(commands).ToList();
+
+            if (commands != null)
+                commandsList = commandsList.Concat(commands).ToList();
 
 
             botClient = new TelegramBotClient(AppSettings.Token);
             //Console.WriteLine("!!!");
-            
+
 
         }
         public Bot() : this(null) { }
-        
+
         public List<Command> Commands
         {
             get { return new List<Command>(commandsList); }
@@ -73,7 +74,7 @@ namespace AssistantBotAPI.Models
                 AllowedUpdates = Array.Empty<UpdateType>()
 
             };
-            
+
             botClient.StartReceiving(
                 updateHandler: HandleUpdateAsync,
                 pollingErrorHandler: HandlePollingErrorAsync,
@@ -100,14 +101,15 @@ namespace AssistantBotAPI.Models
             return Task.CompletedTask;
         }
 
-        private  async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        { 
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
             switch (update.Type)
             {
                 case UpdateType.CallbackQuery:
                     {
-                       // Console.WriteLine(update.Message.MessageId);
-                        await OnCallbackQuery(update.CallbackQuery, botClient);
+                        // Console.WriteLine(update.Message.MessageId);
+                        await OnCallbackQueryCalender(update.CallbackQuery, botClient);
+                        await OnCallbackQueryTime(update.CallbackQuery, botClient);
                         break;
                     }
                 case UpdateType.Message:
@@ -119,31 +121,30 @@ namespace AssistantBotAPI.Models
                 default:
                     break;
 
-
             }
 
-                    //if (message.Text is not { } messageText  )
-                    //    return;
+            //if (message.Text is not { } messageText  )
+            //    return;
 
-                   
-            
+
+
         }
 
-        private  async Task<Message> newMessage(string text,long chatId,CancellationToken cancellationToken)
+        private async Task<Message> newMessage(string text, long chatId, CancellationToken cancellationToken)
         {
-            Command command=null;
-            foreach(var item in commandsList)
+            Command command = null;
+            foreach (var item in commandsList)
             {
                 if (item.Contains(text))
                 {
                     command = item;
                     break;
                 }
-                
+
 
             }
             //Console.WriteLine(command.Name);
-            if(command == null)
+            if (command == null)
             {
                 IntelligentTextMessaging intelligent = new IntelligentTextMessaging(text);
                 string str = intelligent.GetTextOrStickResponse();
@@ -159,19 +160,19 @@ namespace AssistantBotAPI.Models
                         chatId: chatId,
                         text: str,
                         cancellationToken: cancellationToken,
-                        parseMode:Telegram.Bot.Types.Enums.ParseMode.Html
+                        parseMode: Telegram.Bot.Types.Enums.ParseMode.Html
                     );
             }
             else
             {
                 return await command.Execute(chatId, botClient, command.GetParamsArrStr(text));
             }
-            
+
         }
-        public async static Task OnCallbackQuery(CallbackQuery query, ITelegramBotClient bot)
+        private async static Task OnCallbackQueryCalender(CallbackQuery query, ITelegramBotClient bot)
         {
             var cbargs = query.Data.Split(' ');
-            //Console.WriteLine(cbargs[2]);
+
             switch (cbargs[0].Trim())
             {
                 case "month":
@@ -179,20 +180,112 @@ namespace AssistantBotAPI.Models
                         var month = new Month((MonthName)Enum.Parse(typeof(MonthName), cbargs[2]), int.Parse(cbargs[1]));
                         var mkeyboard = Calendar.CreateCalendar(month);
 
-                        await bot.EditMessageReplyMarkupAsync(query.Message.Chat.Id,query.Message.MessageId,mkeyboard,default);
+                        await bot.EditMessageReplyMarkupAsync(query.Message.Chat.Id, query.Message.MessageId, mkeyboard, default);
                         break;
                     }
                 case "year":
-                    var ykeyboard = Calendar.CreateCalendar(int.Parse(cbargs[1]));
+                    {
+                        var ykeyboard = Calendar.CreateCalendar(int.Parse(cbargs[1]));
 
-                    await bot.EditMessageReplyMarkupAsync(query.InlineMessageId, ykeyboard);
-                    break;
+                        await bot.EditMessageReplyMarkupAsync(query.InlineMessageId, ykeyboard);
+                        break;
+                    }
+                case "Monday":
+                case "Tuesday":
+                case "Wednesday":
+                case "Thursday":
+                case "Friday":
+                case "Saturday":
+                case "Sunday":
+                    {
+
+                        var tmp = "";
+                        tmp += ".";
+                        int x = Month.ConverterInMonthName(cbargs[1]);
+                        tmp += (x % 10 > 0) ? x : ("0" + x);
+                        tmp += ".";
+                        tmp += cbargs[3];
+
+                        await bot.SendTextMessageAsync(query.Message.Chat.Id, $"<b>Назначте время.Установить напоминалку на дату и время:</b> ({DateTime.Parse(tmp)})", Telegram.Bot.Types.Enums.ParseMode.Html,replyMarkup:TimeButton.TimeIncDic());
+                        await bot.EditMessageReplyMarkupAsync(query.Message.Chat.Id, query.Message.MessageId, null, default);
+                        break;
+                    }
+
                 default:
+                    break;
 
-                     await bot.AnswerCallbackQueryAsync(cbargs[1]);
+            }
+        }
+        private async static Task OnCallbackQueryTime(CallbackQuery query, ITelegramBotClient bot)
+        {
+            //Console.WriteLine(cbargs);
+            var cbargs = query.Data.Split(' ');
+            Func<string, TimeSpan, string> StringСonversion = (str, t) =>
+              {
+                  var a = query.Message.Text.Split('(',')');
+                  var tmp = a[1].Trim().Split(' ');
+                  var tmp1 = tmp[1].Trim();
+                  Console.WriteLine(a[1].Trim());
+                  var x = TimeOnly.Parse(tmp1).Add(t);
+                  return a[0]  +"("+ tmp[0].Trim() +" "+ x.ToString("hh:mm:ss")+")";
+
+              };
+            switch (cbargs[0].Trim())
+            {
+                case "час":
+                    {
+                        var str = query.Message.Text;
+                        var res = StringСonversion(str, new TimeSpan(1, 0, 0));
+                        Console.WriteLine(StringСonversion(str, new TimeSpan(1, 0, 0)));
+                        await bot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, res,null, replyMarkup: TimeButton.TimeIncDic());
+                        break;
+                    }
+                case "мин":
+                    {
+                        var str = query.Message.Text;
+                        var res = StringСonversion(str, new TimeSpan(0, 1, 0));
+                        await bot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, res, null, replyMarkup: TimeButton.TimeIncDic());
+                        break;
+                    }
+                case "сек":
+                    {
+                        var str = query.Message.Text;
+                        var res = StringСonversion(str, new TimeSpan(0, 0, 1));
+                        await bot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, res, null, replyMarkup: TimeButton.TimeIncDic());
+                        break;
+                    }
+                case "-час":
+                    {
+                        var str = query.Message.Text;
+                        var res = StringСonversion(str, new TimeSpan(-1, 0, 0));
+                        await bot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, res, null, replyMarkup: TimeButton.TimeIncDic());
+                        break;
+                    }
+                case "-мин":
+                    {
+                        var str = query.Message.Text;
+                        var res = StringСonversion(str, new TimeSpan(0, -1, 0));
+                        await bot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, res, null, replyMarkup: TimeButton.TimeIncDic());
+                        break;
+                    }
+                case "-сек":
+                    {
+                        var str = query.Message.Text;
+                        var res = StringСonversion(str, new TimeSpan(0, 0, -1));
+                        await bot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, res, null, replyMarkup: TimeButton.TimeIncDic());
+                        break;
+                    }
+                case "StartAddTime":
+                    {
+                        var tmp = query.Message.Text.Split(':')[1].Trim();
+                        await bot.SendTextMessageAsync(query.Message.Chat.Id, $"<b>Время установлено:</b>{DateTime.Parse(tmp)}. <b>О чем  вам надо напомнить?:</b> ", Telegram.Bot.Types.Enums.ParseMode.Html);
+                        await bot.EditMessageReplyMarkupAsync(query.Message.Chat.Id, query.Message.MessageId, null, default);
+                        break;
+                    }
+                default:
                     break;
             }
         }
+
     }
-    
 }

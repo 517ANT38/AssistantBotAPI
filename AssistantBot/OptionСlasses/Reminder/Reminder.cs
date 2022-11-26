@@ -31,17 +31,17 @@ public class Reminder
         using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db"))
         {
             connection.Open();
-            int count = CountRemind(chatID);
+            int count = (int)CountRemind(chatID);
             if (count >= 5)
                 throw new ArgumentException("Нельзя создать больше пяти напоминания!");
             string sql = "INSERT INTO Reminder(hashe_sum,num,chat_id,reminder_p) " +
-                $"VALUES ({hashe},{count + 1},{chatID},'{remin}'";
+                $"VALUES ({hashe},{count + 1},{chatID},'{remin}');";
             SqliteCommand sqliteCommand = new SqliteCommand(sql, connection);
             sqliteCommand.ExecuteNonQuery();
         }
         ThreadStartRemind(botClient, dateTime, hashe, chatID);
     }
-    private static int CountRemind(long chatID)
+    private static long CountRemind(long chatID)
     {
         using (var connection = new SqliteConnection(@"Data Source=AssistentData\AssistentBotDataBase.db"))
         {
@@ -60,7 +60,7 @@ public class Reminder
                         return 0;
                     }
 
-                    return (int)a;
+                    return (long)a;
 
 
                 }

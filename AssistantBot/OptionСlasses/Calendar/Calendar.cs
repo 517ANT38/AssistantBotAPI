@@ -17,9 +17,9 @@ public class Calendar
         var pos = 0;
         calendar[0] = new InlineKeyboardButton[1]
         {
-                InlineKeyboardButton.WithCallbackData($"{mon.Name} {mon.Year}", $"year {mon.Year}")
+                InlineKeyboardButton.WithCallbackData($"{TranslateInRu(mon.Name)} {mon.Year}", $"year {mon.Year}")
         };
-        var days = new[] { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
+        var days = new[] { "Пн", "Вт", "Ср", "Чт", "Пт", "Су", "Вс" };
         calendar[1] = new InlineKeyboardButton[7];
         for (int i = 0; i < 7; i++)
         {
@@ -34,7 +34,7 @@ public class Calendar
                 {
                     if ((int)mon.Days[pos].Name == j)
                     {
-                        calendar[i][j] = InlineKeyboardButton.WithCallbackData($"{mon.Days[pos].Number}", $"{mon.Days[pos].Name}, {mon.Name} {mon.Days[pos].Number}");
+                        calendar[i][j] = InlineKeyboardButton.WithCallbackData($"{mon.Days[pos].Number}", $"{mon.Days[pos].Name} {mon.Name} {mon.Days[pos].Number} {mon.Year}");
                         pos++;
                     }
                     else
@@ -53,8 +53,8 @@ public class Calendar
         var nextmonth = mon.Name == MonthName.December ? MonthName.January : mon.Name + 1;
         var previousyear = previousmonth == MonthName.December ? mon.Year - 1 : mon.Year;
         var nextyear = nextmonth == MonthName.January ? mon.Year + 1 : mon.Year;
-        calendar[calendar.Length - 1][0] = InlineKeyboardButton.WithCallbackData($"{previousmonth}", $"month {previousyear} {((int)previousmonth)}");
-        calendar[calendar.Length - 1][1] = InlineKeyboardButton.WithCallbackData($"{nextmonth}", $"month {nextyear} {((int)nextmonth)}");
+        calendar[calendar.Length - 1][0] = InlineKeyboardButton.WithCallbackData($"{TranslateInRu(previousmonth)}", $"month {previousyear} {((int)previousmonth)}");
+        calendar[calendar.Length - 1][1] = InlineKeyboardButton.WithCallbackData($"{TranslateInRu(nextmonth)}", $"month {nextyear} {((int)nextmonth)}");
         return new InlineKeyboardMarkup(calendar);
     }
     public static InlineKeyboardMarkup CreateCalendar(int year)
@@ -79,6 +79,37 @@ public class Calendar
             };
         return new InlineKeyboardMarkup(keyboard);
     }
-   
+    private static string TranslateInRu(MonthName monthName)
+    {
+        switch (monthName)
+        {
+            case MonthName.January:
+                return "Январь";
+            case MonthName.February:
+                return "Февраль";
+            case MonthName.March:
+                return "Март";
+            case MonthName.April:
+                return "Апрель";
+            case MonthName.May:
+                return "Май";
+            case MonthName.June:
+                return "Июнь";
+            case MonthName.July:
+                return "Июль";
+            case MonthName.August:
+                return "Август";
+            case MonthName.September:
+                return "Сентябрь";
+            case MonthName.October:
+                return "Октябрь";
+            case MonthName.November:
+                return "Ноябрь";
+            case MonthName.December:
+                return "Декабрь";
+            default:
+                return "";
+        }
+    }
 }
 

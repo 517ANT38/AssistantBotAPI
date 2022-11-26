@@ -19,25 +19,38 @@ public class ReminderCommand : Command
     
     public override async Task<Message> Execute(long chatId, TelegramBotClient client, params string[] arr)
     {
-        if (arr.Length < 0)
+        
+        if (arr.Length <= 0)
         {
-            return await client.SendTextMessageAsync(chatId, "Неуказаны аргументы : О чем напоминать, и время (насколько ставить напоминалку).", Telegram.Bot.Types.Enums.ParseMode.Html);
+            return await client.SendTextMessageAsync(chatId, "Хорошо, укажите на какой день вам надо поставить напоминалку", Telegram.Bot.Types.Enums.ParseMode.Html, replyMarkup: Calendar.CreateCalendar(new Month((MonthName)DateTime.Now.Month, DateTime.Now.Year)));
 
         }
-        else if (arr.Length < 2)
+        else if (arr.Length <= 1)
         {
-            return await client.SendTextMessageAsync(chatId, "Неуказан аргумент : Время (насколько ставить напоминалку).", Telegram.Bot.Types.Enums.ParseMode.Html,replyMarkup:Calendar.CreateCalendar(new Month(MonthName.December,2022)));
+            return await client.SendTextMessageAsync(chatId, "Хорошо, укажите на какой день вам надо поставить напоминалку", Telegram.Bot.Types.Enums.ParseMode.Html, replyMarkup: Calendar.CreateCalendar(new Month((MonthName)DateTime.Now.Month, DateTime.Now.Year)));
         }
         else
         {
-            int  d = int.Parse(arr[1]);
-            Reminder reminder=new Reminder(arr[0], chatId,new TimeSpan(0));
-            return await client.SendTextMessageAsync(chatId, "Неуказан аргумент : Время (насколько ставить напоминалку).", Telegram.Bot.Types.Enums.ParseMode.Html);
+            var d = DateTime.Parse(arr[1]);
+            if (DateTime.Now >= d)
+            {
+                return await client.SendTextMessageAsync(chatId, "Некоректные данные о времени.Время истекло.", Telegram.Bot.Types.Enums.ParseMode.Html);
+            }
+
+            TimeSpan timeSpan = d - DateTime.Now;
+            Reminder reminder=new Reminder(arr[0], chatId,timeSpan);
+            reminder.CreateReminder(client);
+            return await client.SendTextMessageAsync(chatId, "Напоминалка создана.", Telegram.Bot.Types.Enums.ParseMode.Html);
         }
     }
-    
-    //public override string[] GetParamsArrStr(string message)
-    //{
-    //    throw new NotImplementedException();
-    //}
+
+    public override string[] GetParamsArrStr(string message)
+    {
+        string[] arr = message.Replace(Name, "").Split(',');
+        for (int i = 0;i< arr.Length; i++)
+        {
+            arr[i]=arr[i].Trim();
+        }
+        return arr;
+    }
 }
