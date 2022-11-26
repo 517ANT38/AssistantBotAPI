@@ -1,5 +1,6 @@
 ﻿using AssistantBotAPI.Models.Commands;
 using AssistantBotAPI.OptionСlasses;
+using OptionСlasses.Calendar;
 using OptionСlasses.Reminder;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,8 @@ namespace AssistantBotAPI.Models
 
 
             botClient = new TelegramBotClient(AppSettings.Token);
-            Console.WriteLine("!!!");
+            //Console.WriteLine("!!!");
+            
 
         }
         public Bot() : this(null) { }
@@ -99,16 +101,31 @@ namespace AssistantBotAPI.Models
         }
 
         private  async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            
-            if (update.Message is not { } message)
-                return;
-            Reminder.remind(update.Message.Chat.Id);
-            if (message.Text is not { } messageText)
-                return;
-            var chatId = message.Chat.Id;
-            
-            Message sentMessage = await newMessage(message.Text,chatId,cancellationToken);
+        { 
+            switch (update.Type)
+            {
+                case UpdateType.CallbackQuery:
+                    {
+                       // Console.WriteLine(update.Message.MessageId);
+                        await OnCallbackQuery(update.CallbackQuery, botClient);
+                        break;
+                    }
+                case UpdateType.Message:
+                    {
+                        var chatId = update.Message.Chat.Id;
+                        Message sentMessage = await newMessage(update.Message.Text, chatId, cancellationToken);
+                        break;
+                    }
+                default:
+                    break;
+
+
+            }
+
+                    //if (message.Text is not { } messageText  )
+                    //    return;
+
+                   
             
         }
 
@@ -151,6 +168,31 @@ namespace AssistantBotAPI.Models
             }
             
         }
-       
+        public async static Task OnCallbackQuery(CallbackQuery query, ITelegramBotClient bot)
+        {
+            var cbargs = query.Data.Split(' ');
+            //Console.WriteLine(cbargs[2]);
+            switch (cbargs[0].Trim())
+            {
+                case "month":
+                    {
+                        var month = new Month((MonthName)Enum.Parse(typeof(MonthName), cbargs[2]), int.Parse(cbargs[1]));
+                        var mkeyboard = Calendar.CreateCalendar(month);
+
+                        await bot.EditMessageReplyMarkupAsync(query.Message.Chat.Id,query.Message.MessageId,mkeyboard,default);
+                        break;
+                    }
+                case "year":
+                    var ykeyboard = Calendar.CreateCalendar(int.Parse(cbargs[1]));
+
+                    await bot.EditMessageReplyMarkupAsync(query.InlineMessageId, ykeyboard);
+                    break;
+                default:
+
+                     await bot.AnswerCallbackQueryAsync(cbargs[1]);
+                    break;
+            }
+        }
     }
+    
 }

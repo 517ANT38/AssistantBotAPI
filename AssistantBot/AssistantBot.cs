@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 using OptionСlasses.Reminder;
+using System.Globalization;
 
 namespace AssistantBotAPI
 {
@@ -25,6 +26,8 @@ namespace AssistantBotAPI
             //{
             Bot bot = new Bot();
             await bot.startBot();
+
+
             //Translator translator = new Translator("Hello world");
             //Console.WriteLine(translator.GetTranslation());
             //  var a = new GoogleTranslate("auto", "germany");

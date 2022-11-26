@@ -21,7 +21,7 @@ public static  class StandardBot
         new StartCommand(),
         new ScheduleCommand(),
         new WeatherCommand(),
-        
+        new ReminderCommand(),
         //new HelloCommand(),
         new FunCommand()
 
