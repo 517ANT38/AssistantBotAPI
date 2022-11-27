@@ -1,6 +1,4 @@
-﻿using JobWithData;
-using OptionСlasses.Weather;
-using System.Text.RegularExpressions;
+﻿using AssistantBotAPI.OptionСlasses.Weather;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 

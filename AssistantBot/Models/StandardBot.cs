@@ -26,7 +26,7 @@ public static  class StandardBot
         new FunCommand()
 
     }.AsReadOnly();
-
+   
     public static ReadOnlyCollection<Command> CommandsList { get => commandsList;  }
    
 }

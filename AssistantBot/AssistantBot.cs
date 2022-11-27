@@ -1,19 +1,4 @@
 ﻿using AssistantBotAPI.Models;
-using OptionСlasses.Weather;
-using System.Text.RegularExpressions;
-using Telegram.Bot;
-using Telegram.Bot.Exceptions;
-using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-using Microsoft.Data.Sqlite;
-using File = System.IO.File;
-using OpenMeteo;
-using System.Security.Cryptography;
-using System.Text;
-
-using OptionСlasses.Reminder;
-using System.Globalization;
 
 namespace AssistantBotAPI
 {

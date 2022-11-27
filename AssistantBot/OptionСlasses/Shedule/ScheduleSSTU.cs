@@ -1,13 +1,10 @@
 ﻿using HtmlAgilityPack;
-using System;
-using System.Net.Http.Json;
 using Fizzler.Systems.HtmlAgilityPack;
-using JobWithData;
 using ExceptionBot;
 using System.Text.RegularExpressions;
 using System.Text;
 
-namespace OptionСlasses.Shedule;
+namespace AssistantBotAPI.OptionСlasses.Shedule;
 public class ScheduleSSTU: IAsyncLoaDatable
 {
     

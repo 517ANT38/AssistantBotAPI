@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OptionСlasses.Calendar;
+namespace AssistantBotAPI.OptionСlasses.Calendar;
 
 public enum MonthName
 {
-    January,
+    January=1,
     February,
     March,
     April,

@@ -7,7 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace OptionСlasses.Calendar;
+namespace AssistantBotAPI.OptionСlasses.Calendar;
 public class Calendar
 {
 

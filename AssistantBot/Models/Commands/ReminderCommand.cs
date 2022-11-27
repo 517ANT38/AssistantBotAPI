@@ -1,9 +1,7 @@
-﻿using JobWithData;
-using OptionСlasses.Calendar;
-using OptionСlasses.Reminder;
+﻿using AssistantBotAPI.OptionСlasses.Calendar;
+using AssistantBotAPI.OptionСlasses.Reminder;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AssistantBotAPI.Models.Commands;
 public class ReminderCommand : Command

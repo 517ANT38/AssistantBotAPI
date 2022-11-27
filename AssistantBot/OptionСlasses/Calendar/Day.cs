@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OptionСlasses.Calendar;
+namespace AssistantBotAPI.OptionСlasses.Calendar;
  public class Day
 {
     public Day(DayOfWeek name, int number)

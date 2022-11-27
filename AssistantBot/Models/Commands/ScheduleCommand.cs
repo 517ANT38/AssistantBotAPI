@@ -1,10 +1,7 @@
 ﻿//using Telegram.Bot;
 //using Telegram.Bot.Types;
 
-using JobWithData;
-using OptionСlasses.SaveUpadateSheduleDB;
-using OptionСlasses.Shedule;
-using System.Text.RegularExpressions;
+using AssistantBotAPI.OptionСlasses.Shedule;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 

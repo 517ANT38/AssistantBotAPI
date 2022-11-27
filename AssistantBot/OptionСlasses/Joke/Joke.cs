@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace OptionСlasses.Joke;
+namespace AssistantBotAPI.OptionСlasses.Joke;
 
 public class Joke
 {

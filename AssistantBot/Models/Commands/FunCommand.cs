@@ -1,6 +1,4 @@
-﻿using JobWithData;
-using Microsoft.Data.Sqlite;
-using OptionСlasses.Joke;
+﻿using AssistantBotAPI.OptionСlasses.Joke;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Types;

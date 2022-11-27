@@ -11,7 +11,7 @@ using Microsoft.Data.Sqlite;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace OptionСlasses.Reminder;
+namespace AssistantBotAPI.OptionСlasses.Reminder;
 
 public class Reminder
 {
