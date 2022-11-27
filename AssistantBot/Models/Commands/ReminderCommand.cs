@@ -27,7 +27,7 @@ public class ReminderCommand : Command
         else if (arr.Length <= 1)
         {
             
-            return await client.SendTextMessageAsync(chatId, "Хорошо, укажите на какой день вам надо поставить напоминалку", Telegram.Bot.Types.Enums.ParseMode.Html, replyMarkup: Calendar.CreateCalendar(new Month((MonthName)DateTime.Now.Month, DateTime.Now.Year)));
+            return await client.SendTextMessageAsync(chatId, "Не правильно заданы параметры!", Telegram.Bot.Types.Enums.ParseMode.Html, replyMarkup: Calendar.CreateCalendar(new Month((MonthName)DateTime.Now.Month, DateTime.Now.Year)));
         }
         else
         {
