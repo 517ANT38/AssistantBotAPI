@@ -4,6 +4,7 @@ using AssistantBotAPI.OptionСlasses;
 using AssistantBotAPI.OptionСlasses.Calendar;
 using AssistantBotAPI.OptionСlasses.fileProcessing;
 using AssistantBotAPI.OptionСlasses.TimeButton;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -38,7 +39,7 @@ namespace AssistantBotAPI.Models
             public static string Token { get; } = "5650239236:AAGzw60Sdi9GhKbztBG1wGzn5Mkh4A221j8";
             public static string Name { get; } = "AssistantBotAPI";
             public static string interFileBot { get; } = @"AssistentData\InterBot.json";
-
+            public static string boolAndIdFile { get; } = @"AssistentData\BoolAndIdFile.json";
            // public static Dictionary<SaveCommandAndDat, string> settings =new Dictionary<SaveCommandAndDat, string>();
         }
         public Bot() : this(null) { }
@@ -110,7 +111,7 @@ namespace AssistantBotAPI.Models
             {
                 case UpdateType.CallbackQuery:
                     {
-                        // Console.WriteLine(update.Message.MessageId);
+                        await OnCallbackQueryThreadRem(update.CallbackQuery, botClient);
                         await OnCallbackQueryCalender(update.CallbackQuery, botClient);
                         await OnCallbackQueryTime(update.CallbackQuery, botClient);
                         break;
@@ -119,7 +120,7 @@ namespace AssistantBotAPI.Models
                     {
                         var chatId = update.Message.Chat.Id;
                         
-                        FileProcessing file = new FileProcessing();
+                        FileProcesSaveComAndDat file = new FileProcesSaveComAndDat();
                         var t=await file.ReadAsync(AppSettings.interFileBot);
                         //Console.WriteLine(t[0]);
                         if(t != null)
@@ -254,14 +255,12 @@ namespace AssistantBotAPI.Models
         private async static Task OnCallbackQueryTime(CallbackQuery query, ITelegramBotClient bot)
         {
             
-            //Console.WriteLine(cbargs);
             var cbargs = query.Data.Split(' ');
             Func<string, TimeSpan, string> StringСonversion = (str, t) =>
               {
                   var a = query.Message.Text.Split('(',')');
                   var tmp = a[1].Trim().Split(' ');
                   var tmp1 = tmp[1].Trim();
-                  Console.WriteLine(a[1].Trim());
                   var x = TimeOnly.Parse(tmp1).Add(t);
                   return a[0]  +"("+ tmp[0].Trim() +" "+ x.ToString("T")+")";
 
@@ -316,8 +315,15 @@ namespace AssistantBotAPI.Models
                     case "StartAddTime":
                         {
                             var tmp = query.Message.Text.Split('(', ')')[1].Trim();
-                            FileProcessing file=new FileProcessing();
-                            file.perform(AppSettings.interFileBot, AppSettings.interFileBot, new SaveCommandAndDat(StandardBot.CommandsList[4].Name, query.Message.Chat.Id, tmp));
+                            FileProcesSaveComAndDat file=new FileProcesSaveComAndDat();
+                            List<SaveCommandAndDat> andDats = await file.ReadAsync(AppSettings.interFileBot);
+                            if (andDats == null)
+                            {
+                                andDats = new List<SaveCommandAndDat>();
+                                
+                            }
+                            andDats.Add(new SaveCommandAndDat(StandardBot.CommandsList[4].Name, query.Message.Chat.Id, tmp));
+                            await file.WriteAsync(AppSettings.interFileBot,andDats);
                             await bot.SendTextMessageAsync(query.Message.Chat.Id, $"<b>Время установлено: </b>{DateTime.Parse(tmp)}. <b>О чем  вам надо напомнить?</b> ", Telegram.Bot.Types.Enums.ParseMode.Html);
                             await bot.EditMessageReplyMarkupAsync(query.Message.Chat.Id, query.Message.MessageId, null, default);
                             break;
@@ -331,6 +337,36 @@ namespace AssistantBotAPI.Models
                 Console.WriteLine(ex.Message);
             }
         }
-
+        private async static Task OnCallbackQueryThreadRem(CallbackQuery query, ITelegramBotClient bot)
+        {
+            var cbax = query.Data.Split(' ');
+            if (cbax[0]== "Принято")
+            {
+                
+                FileFinishThreadCl cl=new FileFinishThreadCl();
+                var s = await cl.ReadAsync(AppSettings.boolAndIdFile);
+                if (s == null)
+                {
+                    s = new List<ReminderFinshJob>();
+                    ReminderFinshJob job = new ReminderFinshJob(query.Message.Chat.Id, int.Parse(cbax[1]), true);
+                    s.Add(job);
+                }
+                else
+                {
+                    for (int i = 0; i < s.Count; i++)
+                    {
+                        if(s[i].ChatId== query.Message.Chat.Id)
+                        {
+                            if(s[i].Hashe== int.Parse(cbax[1]))
+                            {
+                                s[i].Finish= true;
+                            }
+                        }
+                    }
+                }
+                
+                await  cl.WriteAsync(AppSettings.boolAndIdFile, s);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AssistantBotAPI.Models;
+using System.Diagnostics;
 
 namespace AssistantBotAPI
 {
@@ -11,7 +12,15 @@ namespace AssistantBotAPI
             //{
             Bot bot = new Bot();
             await bot.startBot();
-
+            //foreach (Process i in Process.GetProcesses())
+            //{
+            //    Console.WriteLine(i.ProcessName);
+            //    foreach (ProcessThread thread in i.Threads)
+            //    {
+            //        thread.Dispose()
+            //        Console.WriteLine();
+            //    }
+            //}
 
             //Translator translator = new Translator("Hello world");
             //Console.WriteLine(translator.GetTranslation());

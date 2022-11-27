@@ -1,10 +1,10 @@
 ﻿namespace AssistantBotAPI.JobWithData
 {
-    public struct SaveCommandAndDat
+    public class SaveCommandAndDat
     {
-        public string Name { get; }
-        public long chatID { get; }
-        public string Dat { get; }
+        public string Name { get; set; }
+        public long chatID { get; set; }
+        public string Dat { get; set; }
         public SaveCommandAndDat(string strName, long chatId,string date)
         {
             this.Name = strName;
