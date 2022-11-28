@@ -85,7 +85,7 @@ namespace AssistantBotAPI.Models
 
                 );
                 var me = await botClient.GetMeAsync();
-                Console.WriteLine(me.Username);
+               
             }
             catch (Exception ex)
             {
