@@ -7,7 +7,7 @@ public static  class StandardBot
 {
 	public const string messageHelp = "Чем могу я вам помочь ? ";
 	public const string messageHello = "Привет, я ассистент бот! Как ваши дела?";
-	public const string destinationFilePath = @"FileUsersMessageSended\FileInU\File.file";
+	public const string destinationFilePath = @"FileUsersMessageSended\FileInU\File";
     public const string outFile = @"FileUsersMessageSended\FileOutU\File";
     public const string messQuestSched = "Расписание за определенный день или за всю неделю?";
 	public const string messQuestsGroup = "Какая у вас группа в вузе?";

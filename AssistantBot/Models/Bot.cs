@@ -122,14 +122,21 @@ namespace AssistantBotAPI.Models
                         await OnReminderAction(update, botClient, cancellationToken);
 
                         Message sendMessage = null;
+                        Console.WriteLine(update.Message.Caption);
                         if (update.Message.Caption != null)
                         {
                             
-                            if(SpotJobFileCommand(update.Message.Caption))
+                            if (SpotJobFileCommand(update.Message.Caption))
+                            {
+
                                 await DodownloadsFile(update, botClient);
-                             sendMessage = await newMessage(update.Message.Caption, chatId, cancellationToken);
+                            }
+                            sendMessage = await newMessage(update.Message.Caption, chatId, cancellationToken);
+
+                            
                         }
-                        sendMessage = await newMessage(update.Message.Text, chatId, cancellationToken);
+                        if(update.Message.Text!=null)
+                            sendMessage = await newMessage(update.Message.Text, chatId, cancellationToken);
                         break;
                     }
                 default:
@@ -365,8 +372,9 @@ namespace AssistantBotAPI.Models
             var fileInfo = await botClient.GetFileAsync(doc.FileId);
             var filePath = fileInfo.FilePath;
             Console.WriteLine(filePath);
-            using(FileStream fs = System.IO.File.OpenWrite(StandardBot.destinationFilePath))
+            using(FileStream fs = System.IO.File.Open(StandardBot.destinationFilePath,FileMode.Create))
             {
+                //Console.WriteLine("PPPPP");
                 await botClient.DownloadFileAsync(filePath: filePath, destination: fs);
             }
         }

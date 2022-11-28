@@ -10,6 +10,7 @@ namespace AssistantBotAPI
         static async Task Main(String[] args)
         {
             //{
+
             Bot bot = new Bot();
             await bot.startBot();
 
