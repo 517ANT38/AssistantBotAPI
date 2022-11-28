@@ -119,30 +119,17 @@ namespace AssistantBotAPI.Models
                 case UpdateType.Message:
                     {
                         var chatId = update.Message.Chat.Id;
-                        
-                        FileProcesSaveComAndDat file = new FileProcesSaveComAndDat();
-                        var t=await file.ReadAsync(AppSettings.interFileBot);
-                        //Console.WriteLine(t[0]);
-                        if(t != null)
+                        await OnReminderAction(update, botClient, cancellationToken);
+
+                        Message sendMessage = null;
+                        if (update.Message.Caption != null)
                         {
-                            for(int i=0; i<t.Count;i++)
-                            {
-                                if(t[i].chatID == chatId)
-                                {
-        
-                                    if (t[i].Name == StandardBot.CommandsList[4].Name)
-                                    {
-                                       // commandName = item.Name;
-                                        var s=t[i].Name+" "+ update.Message.Text+","+t[i].Dat;
-                                        Message sendMessageA = await newMessage(s, chatId, cancellationToken);
-                                        t.Remove(t[i]);
-                                        await file.WriteAsync(AppSettings.interFileBot, t);
-                                        return;
-                                    }
-                                }
-                            }
+                            
+                            if(SpotJobFileCommand(update.Message.Caption))
+                                await DodownloadsFile(update, botClient);
+                             sendMessage = await newMessage(update.Message.Caption, chatId, cancellationToken);
                         }
-                        Message sendMessage = await newMessage(update.Message.Text, chatId, cancellationToken);
+                        sendMessage = await newMessage(update.Message.Text, chatId, cancellationToken);
                         break;
                     }
                 default:
@@ -367,6 +354,58 @@ namespace AssistantBotAPI.Models
                 
                 await  cl.WriteAsync(AppSettings.boolAndIdFile, s);
             }
+        }
+        private static async Task DodownloadsFile(Update update,ITelegramBotClient botClient)
+        {
+            var doc = update.Message.Document;
+            if (doc == null)
+            {
+                return;
+            }
+            var fileInfo = await botClient.GetFileAsync(doc.FileId);
+            var filePath = fileInfo.FilePath;
+            Console.WriteLine(filePath);
+            using(FileStream fs = System.IO.File.OpenWrite(StandardBot.destinationFilePath))
+            {
+                await botClient.DownloadFileAsync(filePath: filePath, destination: fs);
+            }
+        }
+        private async Task OnReminderAction(Update update, ITelegramBotClient botClient, CancellationToken cancellationToken)
+        {
+            var chatId = update.Message.Chat.Id;
+            FileProcesSaveComAndDat file = new FileProcesSaveComAndDat();
+            var t = await file.ReadAsync(AppSettings.interFileBot);
+            //Console.WriteLine(t[0]);
+            if (t != null)
+            {
+                for (int i = 0; i < t.Count; i++)
+                {
+                    if (t[i].chatID == chatId)
+                    {
+
+                        if (t[i].Name == StandardBot.CommandsList[4].Name)
+                        {
+                            var s = t[i].Name + " " + update.Message.Text + "," + t[i].Dat;
+                            Message sendMessageA = await newMessage(s, chatId, cancellationToken);
+                            t.Remove(t[i]);
+                            await file.WriteAsync(AppSettings.interFileBot, t);
+                            await Task.Delay(5000);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        private static bool SpotJobFileCommand(string text)
+        {
+            foreach (var item in StandardBot.CommandsList)
+            {
+                if (item.Contains(text))
+                {
+                    return item.TypeCommand=="with files";
+                }
+            }
+            return false;
         }
     }
 }

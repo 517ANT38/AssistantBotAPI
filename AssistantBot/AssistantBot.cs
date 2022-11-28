@@ -12,6 +12,7 @@ namespace AssistantBotAPI
             //{
             Bot bot = new Bot();
             await bot.startBot();
+
             //foreach (Process i in Process.GetProcesses())
             //{
             //    Console.WriteLine(i.ProcessName);

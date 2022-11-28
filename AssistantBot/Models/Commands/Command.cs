@@ -6,6 +6,7 @@ namespace AssistantBotAPI.Models.Commands
 {
     public abstract class Command
     {
+        public virtual string TypeCommand => "not with files";
         public abstract string Name { get; }
         public abstract Task<Message> Execute(long chatId, TelegramBotClient client,params string[] arr);
 

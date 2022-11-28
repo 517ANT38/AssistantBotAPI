@@ -191,7 +191,7 @@ public class Reminder
     {
         //await Task.Delay(new TimeSpan(0, 1, 0));
         Message mes = await botClient.SendTextMessageAsync(chatID, str, Telegram.Bot.Types.Enums.ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Принято", $"Принято {hashe}") }));
-        await Task.Delay(new TimeSpan(0, 1, 0));
+        await Task.Delay(new TimeSpan(0, 0, 7));
         var b = await FinishThread(chatID, hashe);
         if (b)
         {
