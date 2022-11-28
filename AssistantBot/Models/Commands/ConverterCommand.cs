@@ -11,7 +11,7 @@ namespace AssistantBotAPI.Models.Commands;
 
 public class ConverterCommand : Command
 {
-    public override string TypeCommand => "with Files";
+    public override string TypeCommand => "with files";
     public override string Name => "/converter";
 
     public override bool Contains(string message)
@@ -37,8 +37,8 @@ public class ConverterCommand : Command
                 var s=arr[0].ToLower()+" "+arr[1].ToLower();
                 if(item.ConvertName == s)
                 {
-                    var fileOut = StandardBot.outFile + item.ConvertToType;
-                    await item.PerformAsync(StandardBot.destinationFilePath,  fileOut);
+                    var fileOut = StandardBot.outFileDirect +"File"+ item.ConvertToType;
+                    await item.PerformAsync(StandardBot.destinationFileDirectPath,  fileOut);
                     using (Stream stream = System.IO.File.OpenRead(fileOut))
                     {
                         return await client.SendDocumentAsync(

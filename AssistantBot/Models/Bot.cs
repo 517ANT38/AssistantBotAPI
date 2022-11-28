@@ -4,7 +4,6 @@ using AssistantBotAPI.OptionСlasses;
 using AssistantBotAPI.OptionСlasses.Calendar;
 using AssistantBotAPI.OptionСlasses.fileProcessing;
 using AssistantBotAPI.OptionСlasses.TimeButton;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -30,7 +29,6 @@ namespace AssistantBotAPI.Models
 
 
             botClient = new TelegramBotClient(AppSettings.Token);
-            //Console.WriteLine("!!!");
 
 
         }
@@ -40,7 +38,6 @@ namespace AssistantBotAPI.Models
             public static string Name { get; } = "AssistantBotAPI";
             public static string interFileBot { get; } = @"AssistentData\InterBot.json";
             public static string boolAndIdFile { get; } = @"AssistentData\BoolAndIdFile.json";
-           // public static Dictionary<SaveCommandAndDat, string> settings =new Dictionary<SaveCommandAndDat, string>();
         }
         public Bot() : this(null) { }
 
@@ -70,26 +67,31 @@ namespace AssistantBotAPI.Models
         }
         public async Task startBot()
         {
-            using var cts = new CancellationTokenSource();
-            Console.WriteLine("Run!");
-            // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
-            var receiverOptions = new ReceiverOptions
+            try
             {
-                AllowedUpdates = Array.Empty<UpdateType>()
+                using var cts = new CancellationTokenSource();
+                Console.WriteLine("Run!");
+                var receiverOptions = new ReceiverOptions
+                {
+                    AllowedUpdates = Array.Empty<UpdateType>()
 
-            };
+                };
 
-            botClient.StartReceiving(
-                updateHandler: HandleUpdateAsync,
-                pollingErrorHandler: HandlePollingErrorAsync,
-                receiverOptions: receiverOptions,
-                cancellationToken: cts.Token
+                botClient.StartReceiving(
+                    updateHandler: HandleUpdateAsync,
+                    pollingErrorHandler: HandlePollingErrorAsync,
+                    receiverOptions: receiverOptions,
+                    cancellationToken: cts.Token
 
-            );
-            var me = await botClient.GetMeAsync();
-
-            Console.WriteLine($"Start listening for @{me.Username}");
-            Console.ReadLine();
+                );
+                var me = await botClient.GetMeAsync();
+                Console.WriteLine(me.Username);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
         }
 
         private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -128,15 +130,19 @@ namespace AssistantBotAPI.Models
                             
                             if (SpotJobFileCommand(update.Message.Caption))
                             {
-
+                                //Console.WriteLine("!!!");
                                 await DodownloadsFile(update, botClient);
                             }
                             sendMessage = await newMessage(update.Message.Caption, chatId, cancellationToken);
-
+                            await DeleteFile(StandardBot.destinationFileDirectPath);
+                            await DeleteFile(StandardBot.outFileDirect);
                             
                         }
                         if(update.Message.Text!=null)
-                            sendMessage = await newMessage(update.Message.Text, chatId, cancellationToken);
+                            if(!SpotJobFileCommand(update.Message.Text))
+                                sendMessage = await newMessage(update.Message.Text, chatId, cancellationToken);
+                            else
+                                sendMessage = await newMessage(StandardBot.errorMessUserNotFile +" "+ update.Message.Text, chatId, cancellationToken);
                         break;
                     }
                 default:
@@ -144,8 +150,7 @@ namespace AssistantBotAPI.Models
 
             }
 
-            //if (message.Text is not { } messageText  )
-            //    return;
+           
 
 
 
@@ -165,7 +170,7 @@ namespace AssistantBotAPI.Models
 
             }
             
-            //Console.WriteLine(command.Name);
+            
             if (command == null)
             {
                 IntelligentTextMessaging intelligent = new IntelligentTextMessaging(text);
@@ -187,6 +192,8 @@ namespace AssistantBotAPI.Models
             }
             else
             {
+                if (text.Contains(StandardBot.errorMessUserNotFile))           
+                    return await botClient.SendTextMessageAsync(chatId, "Не задан файл");
                 return await command.Execute(chatId, botClient, command.GetParamsArrStr(text));
             }
 
@@ -221,7 +228,7 @@ namespace AssistantBotAPI.Models
                     case "Saturday":
                     case "Sunday":
                         {
-                            //Console.WriteLine(cbargs[1]+ cbargs[2] + cbargs[3]);
+                            
                             var k = int.Parse(cbargs[2]);
                             var tmp = (k >= 10 && k <= 99) ? cbargs[2] : (0 + cbargs[2]);
                             tmp += ".";
@@ -367,14 +374,13 @@ namespace AssistantBotAPI.Models
             var doc = update.Message.Document;
             if (doc == null)
             {
+                
                 return;
             }
             var fileInfo = await botClient.GetFileAsync(doc.FileId);
             var filePath = fileInfo.FilePath;
-            Console.WriteLine(filePath);
-            using(FileStream fs = System.IO.File.Open(StandardBot.destinationFilePath,FileMode.Create))
+            using(FileStream fs = System.IO.File.Open(StandardBot.destinationFileDirectPath+"File.bin",FileMode.Create))
             {
-                //Console.WriteLine("PPPPP");
                 await botClient.DownloadFileAsync(filePath: filePath, destination: fs);
             }
         }
@@ -383,7 +389,6 @@ namespace AssistantBotAPI.Models
             var chatId = update.Message.Chat.Id;
             FileProcesSaveComAndDat file = new FileProcesSaveComAndDat();
             var t = await file.ReadAsync(AppSettings.interFileBot);
-            //Console.WriteLine(t[0]);
             if (t != null)
             {
                 for (int i = 0; i < t.Count; i++)
@@ -410,10 +415,23 @@ namespace AssistantBotAPI.Models
             {
                 if (item.Contains(text))
                 {
+                    
                     return item.TypeCommand=="with files";
                 }
             }
             return false;
+        }
+        private static async Task DeleteFile(string directoryPath)
+        {
+            await Task.Run(() =>
+            {
+                var dir = new DirectoryInfo(directoryPath);
+
+                foreach (var file in dir.EnumerateFiles("*.*"))
+                {
+                    file.Delete();
+                }
+            });
         }
     }
 }

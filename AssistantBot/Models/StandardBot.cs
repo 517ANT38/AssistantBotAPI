@@ -2,13 +2,14 @@
 using AssistantBotAPI.OptionСlasses.Converter;
 using System;
 using System.Collections.ObjectModel;
+using System.Xml;
 
 public static  class StandardBot 
 {
 	public const string messageHelp = "Чем могу я вам помочь ? ";
 	public const string messageHello = "Привет, я ассистент бот! Как ваши дела?";
-	public const string destinationFilePath = @"FileUsersMessageSended\FileInU\File";
-    public const string outFile = @"FileUsersMessageSended\FileOutU\File";
+	public const string destinationFileDirectPath = @"FileUsersMessageSended\FileInU\";
+    public const string outFileDirect = @"FileUsersMessageSended\FileOutU\";
     public const string messQuestSched = "Расписание за определенный день или за всю неделю?";
 	public const string messQuestsGroup = "Какая у вас группа в вузе?";
 	public const string messErrorGroup = "Такой группы нет!";
@@ -18,6 +19,7 @@ public static  class StandardBot
 	public const string pattrenGroup2 = @"^(б|м|с)[1-2]{0,1}-([^\w\sа-яЙйЫЪЬ]{4})-[1-5]{2}";
     public const string patternUri = @"^(?:(http(s|)|ftp)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+$";
     public const string nameResFile = "ResultFile";
+    public const string errorMessUserNotFile = "NotFile";
     private static ReadOnlyCollection<Command> commandsList = new List<Command>()
     {
         new HelpCommand(),

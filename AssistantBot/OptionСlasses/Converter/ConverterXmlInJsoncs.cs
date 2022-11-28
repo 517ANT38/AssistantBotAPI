@@ -24,12 +24,17 @@ public class ConverterXmlInJsoncs : Converter
         return null;
     }
 
+    public override Task WriteAsync(string nameFile, string? value)
+    {
+        throw new NotImplementedException();
+    }
+
     //public override async Task WriteAsync(string nameFile, string? value = null)
     //{
     //    using (FileStream fs = File.Open(nameFile, FileMode.Create))
     //    {
 
-            
+
     //        var b = System.Text.Encoding.UTF8.GetBytes(value);
 
     //        await fs.WriteAsync(b, 0, value.Length);

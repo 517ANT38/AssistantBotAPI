@@ -1,5 +1,6 @@
-﻿using PdfSharpCore.Drawing;
-using PdfSharpCore.Pdf;
+﻿using MigraDoc.DocumentObjectModel;
+using MigraDoc.Rendering;
+using System.Text;
 
 namespace AssistantBotAPI.OptionСlasses.Converter;
 
@@ -9,41 +10,50 @@ public class ConverterDocxInPDF : Converter
     public override string ConvertToType => ".pdf";
     public override async Task<string> ReadAsync(string nameFile)
     {
-        using (FileStream fs = File.Open(nameFile, FileMode.Open))
+        StringBuilder textFileLines = new StringBuilder();
+        using (StreamReader sr = new StreamReader(nameFile))
         {
-            if (fs.Length < 0)
-                return null;
-            byte[] data = new byte[fs.Length];
+            while (!sr.EndOfStream)
+            {
+                textFileLines.Append(await sr.ReadLineAsync());
+                textFileLines.Append(Environment.NewLine);
+            }
 
-            await fs.ReadAsync(data, 0, data.Length);
-            var s = System.Text.Encoding.UTF8.GetString(data, 0, data.Length);
-            return s;
         }
-        return null;
+        return textFileLines.ToString();
+        
     }
 
-    public override async Task WriteAsync(string nameFile, string? value = null)
+    public override async Task WriteAsync(string nameFile, string? value)
     {
         await Task.Run(() =>
         {
-            PdfDocument document = new PdfDocument();
+            List<string> list = new List<string>(value.Split(Environment.NewLine));
 
-            // And you need a page:
-            PdfPage page = document.AddPage();
+            MigraDoc.DocumentObjectModel.Document doc = new MigraDoc.DocumentObjectModel.Document();
+            Section section = doc.AddSection();
 
-            // Drawing is done with an XGraphics object:
-            XGraphics gfx = XGraphics.FromPdfPage(page);
 
-            // Then you'll create a font:
-            XFont font = new XFont("Verdana", 20, XFontStyle.Bold);
+            //just font arrangements as you wish
+            MigraDoc.DocumentObjectModel.Font font = new MigraDoc.DocumentObjectModel.Font("Times New Roman", 15);
+            font.Bold = true;
 
-            FileStream fileStream = new FileStream(nameFile, FileMode.Create);
-            fileStream?.Close();
-            gfx.DrawString(
-                value, font, XBrushes.Black,
-                new XRect(0, 0, page.Width,0)
-                );
-            document.Save(nameFile);
+            //add each line to pdf 
+
+            foreach (string line in list)
+            {
+                Paragraph paragraph = section.AddParagraph();
+                paragraph.AddFormattedText(line, font);
+
+            }
+
+            FileStream fs = new FileStream(nameFile, FileMode.Create);
+            
+            PdfDocumentRenderer renderer = new PdfDocumentRenderer();
+            renderer.Document = doc;
+            System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            renderer.RenderDocument();
+            renderer.Save(fs,true);
         });
     }
 

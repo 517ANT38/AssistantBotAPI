@@ -13,7 +13,8 @@ namespace AssistantBotAPI
 
             Bot bot = new Bot();
             await bot.startBot();
-
+            //FileInfo fileInfo = new FileInfo("Text.txt");
+            //Console.WriteLine(fileInfo.Extension);
             //foreach (Process i in Process.GetProcesses())
             //{
             //    Console.WriteLine(i.ProcessName);
