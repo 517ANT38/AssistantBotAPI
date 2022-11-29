@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace AssistantBotAPI.OptionСlasses;
+namespace AssistantBotAPI.OptionСlasses.IntelligentTextMessaging;
 
 public class IntelligentTextMessaging
 {

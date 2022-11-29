@@ -9,36 +9,34 @@ public class ConverterXmlInJsoncs : Converter
     public override string ConvertToType => ".json";
     public override async Task<string> ReadAsync(string nameFile)
     {
-        using (FileStream fs = File.Open(nameFile, FileMode.Open))
-        {
-            if (fs.Length < 0)
-                return null;
-            byte[] data = new byte[fs.Length];
-
-            await fs.ReadAsync(data, 0, data.Length);
-            var s = System.Text.Encoding.UTF8.GetString(data, 0, data.Length);
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(s);
-            return JsonConvert.SerializeXmlNode(doc);
-        }
-        return null;
+        using StreamReader fs =new StreamReader(nameFile);
+       //Console.WriteLine(nameFile);
+        var s=await fs.ReadToEndAsync();
+        
+        //var s = System.Text.Encoding.UTF8.GetString(data, 0, data.Length);
+        XmlDocument doc = new XmlDocument();
+        doc.LoadXml(s);
+        
+        return doc.OuterXml;
+        
+        
     }
 
-    public override Task WriteAsync(string nameFile, string? value)
+    public override async Task WriteAsync(string nameFile, string? value)
     {
-        throw new NotImplementedException();
+        using (StreamWriter fs = new StreamWriter(nameFile)) 
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(value);
+
+            string jsonText = JsonConvert.SerializeXmlNode(doc,Newtonsoft.Json.Formatting.Indented);
+            await fs.WriteAsync(jsonText);
+        }
+        
+        
+
     }
 
-    //public override async Task WriteAsync(string nameFile, string? value = null)
-    //{
-    //    using (FileStream fs = File.Open(nameFile, FileMode.Create))
-    //    {
-
-
-    //        var b = System.Text.Encoding.UTF8.GetBytes(value);
-
-    //        await fs.WriteAsync(b, 0, value.Length);
-    //    }
-    //}
+    
 }
 

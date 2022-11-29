@@ -1,8 +1,8 @@
 ﻿using AssistantBotAPI.JobWithData;
 using AssistantBotAPI.Models.Commands;
-using AssistantBotAPI.OptionСlasses;
 using AssistantBotAPI.OptionСlasses.Calendar;
 using AssistantBotAPI.OptionСlasses.fileProcessing;
+using AssistantBotAPI.OptionСlasses.IntelligentTextMessaging;
 using AssistantBotAPI.OptionСlasses.TimeButton;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
@@ -18,10 +18,11 @@ namespace AssistantBotAPI.Models
         public TelegramBotClient botClient;
         private List<Command> commandsList;
 
-        public Bot(List<Command> commands)
+        public Bot(string token,string name,List<Command> commands)
         {
 
-
+            AppSettings.Token=token;
+            AppSettings.Name=name;
             commandsList = new List<Command>(StandardBot.CommandsList);
 
             if (commands != null)
@@ -34,12 +35,12 @@ namespace AssistantBotAPI.Models
         }
         private static class AppSettings
         {
-            public static string Token { get; } = "5650239236:AAGzw60Sdi9GhKbztBG1wGzn5Mkh4A221j8";
-            public static string Name { get; } = "AssistantBotAPI";
+            public static string Token { get; set; } 
+            public static string Name { get; set; } 
             public static string interFileBot { get; } = @"AssistentData\InterBot.json";
             public static string boolAndIdFile { get; } = @"AssistentData\BoolAndIdFile.json";
         }
-        public Bot() : this(null) { }
+        public Bot(string token, string name) : this(token,name,null) { }
 
         public List<Command> Commands
         {
@@ -71,6 +72,7 @@ namespace AssistantBotAPI.Models
             {
                 using var cts = new CancellationTokenSource();
                 Console.WriteLine("Run!");
+                // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
                 var receiverOptions = new ReceiverOptions
                 {
                     AllowedUpdates = Array.Empty<UpdateType>()
@@ -85,11 +87,14 @@ namespace AssistantBotAPI.Models
 
                 );
                 var me = await botClient.GetMeAsync();
-               
+
+                Console.WriteLine($"Start listening for @{me.Username}");
+                Console.ReadLine();
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine(ex.Message);
             }
             
         }
@@ -124,13 +129,11 @@ namespace AssistantBotAPI.Models
                         await OnReminderAction(update, botClient, cancellationToken);
 
                         Message sendMessage = null;
-                        Console.WriteLine(update.Message.Caption);
                         if (update.Message.Caption != null)
                         {
                             
                             if (SpotJobFileCommand(update.Message.Caption))
                             {
-                                //Console.WriteLine("!!!");
                                 await DodownloadsFile(update, botClient);
                             }
                             sendMessage = await newMessage(update.Message.Caption, chatId, cancellationToken);
@@ -379,7 +382,7 @@ namespace AssistantBotAPI.Models
             }
             var fileInfo = await botClient.GetFileAsync(doc.FileId);
             var filePath = fileInfo.FilePath;
-            using(FileStream fs = System.IO.File.Open(StandardBot.destinationFileDirectPath+"File.bin",FileMode.Create))
+            using(FileStream fs = System.IO.File.Open(StandardBot.destinationFileDirectPath+@"\"+"File.bin",FileMode.Create))
             {
                 await botClient.DownloadFileAsync(filePath: filePath, destination: fs);
             }

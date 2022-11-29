@@ -8,8 +8,8 @@ public static  class StandardBot
 {
 	public const string messageHelp = "Чем могу я вам помочь ? ";
 	public const string messageHello = "Привет, я ассистент бот! Как ваши дела?";
-	public const string destinationFileDirectPath = @"FileUsersMessageSended\FileInU\";
-    public const string outFileDirect = @"FileUsersMessageSended\FileOutU\";
+	public const string destinationFileDirectPath = @"FileUsersMessageSended\FileInU";
+    public const string outFileDirect = @"FileUsersMessageSended\FileOutU";
     public const string messQuestSched = "Расписание за определенный день или за всю неделю?";
 	public const string messQuestsGroup = "Какая у вас группа в вузе?";
 	public const string messErrorGroup = "Такой группы нет!";

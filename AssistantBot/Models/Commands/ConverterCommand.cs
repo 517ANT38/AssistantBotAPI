@@ -37,8 +37,8 @@ public class ConverterCommand : Command
                 var s=arr[0].ToLower()+" "+arr[1].ToLower();
                 if(item.ConvertName == s)
                 {
-                    var fileOut = StandardBot.outFileDirect +"File"+ item.ConvertToType;
-                    await item.PerformAsync(StandardBot.destinationFileDirectPath,  fileOut);
+                    var fileOut = StandardBot.outFileDirect+@"\"+ "File"+ item.ConvertToType;
+                    await item.PerformAsync(StandardBot.destinationFileDirectPath + @"\" + "File.bin",  fileOut);
                     using (Stream stream = System.IO.File.OpenRead(fileOut))
                     {
                         return await client.SendDocumentAsync(

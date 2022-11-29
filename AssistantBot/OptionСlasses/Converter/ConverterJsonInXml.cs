@@ -9,6 +9,7 @@ public class ConverterJsonInXml : Converter
     public override string ConvertToType => ".xml";
     public override async Task<string> ReadAsync(string nameFile)
     {
+       // Console.WriteLine(nameFile);
         using FileStream fs = File.Open(nameFile, FileMode.Open);
         
         if (fs.Length < 0)

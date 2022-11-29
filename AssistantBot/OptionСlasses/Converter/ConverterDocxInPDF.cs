@@ -35,27 +35,43 @@ public class ConverterDocxInPDF : Converter
 
 
             //just font arrangements as you wish
-            MigraDoc.DocumentObjectModel.Font font = new MigraDoc.DocumentObjectModel.Font("Times New Roman", 15);
+            MigraDoc.DocumentObjectModel.Font font = new MigraDoc.DocumentObjectModel.Font("Times New Roman", 5);
             font.Bold = true;
 
-            //add each line to pdf 
-
+            section.PageSetup.PageFormat = PageFormat.A4;//стандартный размер страницы
+            section.PageSetup.Orientation = Orientation.Portrait;//ориентация
+            section.PageSetup.BottomMargin = 10;//нижний отступ
+            section.PageSetup.TopMargin = 10;//верхний отступ 
+            section.PageSetup.LeftMargin = 10;
+            section.PageSetup.RightMargin = 20;
             foreach (string line in list)
             {
                 Paragraph paragraph = section.AddParagraph();
-                paragraph.AddFormattedText(line, font);
+                paragraph.AddFormattedText(EncodingHack(line), font);
 
             }
 
-            FileStream fs = new FileStream(nameFile, FileMode.Create);
+            using FileStream fs = new FileStream(nameFile, FileMode.Create);
             
-            PdfDocumentRenderer renderer = new PdfDocumentRenderer();
+            PdfDocumentRenderer renderer = new PdfDocumentRenderer(false,PdfSharp.Pdf.PdfFontEmbedding.Always);
             renderer.Document = doc;
-            System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+           System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             renderer.RenderDocument();
             renderer.Save(fs,true);
         });
     }
-
+    private static string EncodingHack(string str)
+    {
+        var encoding = Encoding.BigEndianUnicode;
+        var bytes = encoding.GetBytes(str);
+        var sb = new StringBuilder();
+        sb.Append((char)254);
+        sb.Append((char)255);
+        for (int i = 0; i < bytes.Length; ++i)
+        {
+            sb.Append((char)bytes[i]);
+        }
+        return sb.ToString();
+    }
 }
 
