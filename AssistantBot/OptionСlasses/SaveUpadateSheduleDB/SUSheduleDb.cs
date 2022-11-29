@@ -33,7 +33,6 @@ public class SUSheduleDb
             string sql = $"DELETE FROM ScheduleSaved  WHERE (date_p<=date('now','-{days_p} day'));";
             SqliteCommand sqliteCommand = new SqliteCommand(sql, connection);
             sqliteCommand.ExecuteNonQuery();
-           // Console.WriteLine(sqliteCommand.ExecuteNonQuery());
 
         }
         
