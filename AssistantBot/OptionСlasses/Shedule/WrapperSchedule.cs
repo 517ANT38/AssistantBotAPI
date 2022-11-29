@@ -85,6 +85,10 @@ public class WrapperSchedule : IAsyncLoaDatable
             
 
         }
+        catch(ArgumentOutOfRangeException ex)
+        {
+            return (false, "Непередано ни одного аргумента для подбора расписания!");
+        }
         catch (IndexOutOfRangeException ex)
         {
             return (false,"Проверьте параметры расписания,их передано слишком много!");
