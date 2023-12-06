@@ -11,7 +11,7 @@ namespace AssistantBotAPI
         static async Task Main(String[] args)
         {
             
-            var text = File.ReadAllText(@"C:\Users\user\source\repos\AssistantBot\AssistantBot\MyBot.json");
+            var text = File.ReadAllText(@"./MyBot.json");
             var json = JObject.Parse(text);
             Bot bot = new Bot(json["Token"].ToString(), json["Name"].ToString());
             await bot.startBot();
